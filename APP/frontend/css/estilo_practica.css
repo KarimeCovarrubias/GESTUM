@@ -9,6 +9,7 @@
     --card: #FFFFFF;
     --border: #E3E9EE;
     --ok: #1F9D55;
+    --ok-bg: #E9F8EF;
     --error: #D9564A;
 }
 
@@ -19,66 +20,35 @@ body{
     background: var(--bg);
     color: var(--navy);
     font-family: 'Inter', sans-serif;
-    padding: 20px 16px 60px;
+    padding-bottom: 100px; /* espacio para la barra inferior de retroalimentación */
 }
 
 h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
 
-.back-link{
-    display: inline-flex;
+/* ---------- Barra superior (estilo Duolingo) ---------- */
+.practica-topbar{
+    display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.icon-btn{
     color: var(--navy-soft);
     text-decoration: none;
-    font-size: 13.5px;
-    font-weight: 600;
-    margin-bottom: 18px;
-}
-
-.practica-wrap{
-    max-width: 480px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.practica-wrap h1{ font-size: 22px; margin-bottom: 6px; }
-
-.letra-actual{ font-size: 15px; color: var(--navy-soft); margin-bottom: 16px; }
-.letra-actual strong{ color: var(--navy); font-size: 20px; }
-
-.camara-box{
-    position: relative;
-    border-radius: 16px;
-    overflow: hidden;
-    background: #000;
-    aspect-ratio: 4 / 3;
-    margin-bottom: 16px;
-}
-
-#video{ width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-
-.feedback{
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    padding: 10px 14px;
+    font-size: 20px;
     font-weight: 700;
-    font-size: 14px;
-    color: #fff;
-    background: rgba(27, 58, 107, 0.75);
-    text-align: center;
+    line-height: 1;
 }
-
-.feedback--ok{ background: rgba(31, 157, 85, 0.85); }
-.feedback--error{ background: rgba(217, 86, 74, 0.85); }
-.feedback--info{ background: rgba(27, 58, 107, 0.6); }
-
-.progreso-leccion{ display: flex; align-items: center; gap: 10px; }
-
-#progreso-texto{ font-weight: 700; font-size: 13px; color: var(--navy-soft); white-space: nowrap; }
 
 .progreso-track{
     flex: 1;
-    height: 6px;
+    height: 10px;
     border-radius: 999px;
     background: var(--border);
     overflow: hidden;
@@ -88,9 +58,94 @@ h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
     height: 100%;
     border-radius: 999px;
     background: linear-gradient(90deg, var(--teal), var(--gold));
-    transition: width 0.3s ease;
+    transition: width 0.35s ease;
 }
 
+.vidas{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 700;
+    color: var(--heart);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* ---------- Contenido ---------- */
+.practica-wrap{
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 16px 0;
+    text-align: center;
+}
+
+.practica-wrap h1{ font-size: 22px; margin-bottom: 6px; }
+
+.letra-actual{ font-size: 15px; color: var(--navy-soft); margin-bottom: 18px; }
+.letra-actual strong{ color: var(--navy); font-size: 20px; }
+
+.practica-grid{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.referencia-box, .camara-box{
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+}
+
+.referencia-box{
+    background: var(--card);
+    border: 1px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.referencia-placeholder{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--navy-soft);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.referencia-placeholder .tile-icon{ font-size: 30px; }
+
+.referencia-img{ 
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; 
+    background: #ffffff; 
+    padding: 12px;
+}
+
+.camara-box{ background: #000; }
+
+#video{ width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+
+.camara-overlay{
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 10px 14px;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: #fff;
+    background: rgba(27, 58, 107, 0.65);
+    text-align: center;
+}
+
+/* ---------- Pantalla lección completada ---------- */
 .completada{
     margin-top: 40px;
     display: flex;
@@ -98,6 +153,7 @@ h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
     align-items: center;
     gap: 18px;
 }
+.completada[hidden]{ display: none; }
 
 .btn-primary-glow{
     display: inline-block;
@@ -108,4 +164,55 @@ h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
     font-size: 14px;
     padding: 12px 26px;
     border-radius: 12px;
+}
+
+/* ---------- Barra inferior de retroalimentación (estilo Duolingo) ---------- */
+.feedback-bar{
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--ok-bg);
+    border-top: 2px solid var(--ok);
+}
+.feedback-bar[hidden]{ display: none; }
+
+.feedback-info{ display: flex; align-items: center; gap: 12px; }
+
+.feedback-icon{
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--ok);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.feedback-titulo{ margin: 0; font-weight: 800; color: var(--ok); font-size: 15px; }
+.feedback-sub{ margin: 0; color: var(--navy-soft); font-size: 13px; }
+
+.btn-continuar{
+    background: var(--ok);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 26px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* ---------- Escritorio ---------- */
+@media (min-width: 720px){
+    .practica-grid{ grid-template-columns: 1fr; } /* Mantiene la disposición vertical en pantallas grandes */
+    .practica-wrap{ padding-top: 24px; }
+    .feedback-bar{ padding: 18px 40px; }
 }

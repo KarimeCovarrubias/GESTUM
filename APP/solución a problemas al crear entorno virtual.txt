@@ -18,3 +18,16 @@
     Después de eso, vuelve a intentar:
         powershell
         venv\Scripts\activate
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+------- DESCARGAR ENTORNO VIRTUAL -------
+
+cd C:\Users\tu-user\GESTUM\app
+py -3.12 -m venv venv
+.\venv\Scripts\Activate.ps1
+python --version
+
+---- INSTALAR LOS requirements.txt ----
+
+pip install requirements.txt

@@ -51,7 +51,7 @@ function renderizarInicio(bloques) {
     const heroSub = document.getElementById('hero-sub');
     if (heroSub && bloqueActivo) {
         const completadas = bloqueActivo.lecciones.filter(l => l.estado === 'completada').length;
-        heroSub.textContent = `Vas ${completadas} de ${bloqueActivo.totalLecciones} lecciones en ${bloqueActivo.titulo}. Sigue practicando para no perder tu racha.`;
+        heroSub.textContent = `Llevas ${completadas} de ${bloqueActivo.totalLecciones} lecciones en ${bloqueActivo.titulo}. Sigue practicando para no perder tu racha.`;
     }
 
     bloques.forEach(bloque => {
@@ -188,7 +188,7 @@ function renderizarInicio(bloques) {
     const heroSub = document.getElementById('hero-sub');
     if (heroSub && bloqueActivo) {
         const completadas = bloqueActivo.lecciones.filter(l => l.estado === 'completada').length;
-        heroSub.textContent = `Vas ${completadas} de ${bloqueActivo.totalLecciones} lecciones en ${bloqueActivo.titulo}. Sigue practicando para no perder tu racha.`;
+        heroSub.textContent = `Levas ${completadas} de ${bloqueActivo.totalLecciones} lecciones en ${bloqueActivo.titulo}. Sigue practicando para no perder tu racha.`;
     }
 
     bloques.forEach(bloque => {

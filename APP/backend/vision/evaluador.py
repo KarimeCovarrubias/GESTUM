@@ -6,15 +6,13 @@ usaba camara.py (Streamlit), pero aquí recibe un frame ya decodificado
 (enviado por el navegador como imagen base64) y regresa un resultado en
 lugar de dibujar sobre un video en vivo.
 
-Colocar este archivo en: backend/vision/evaluador.py
-(crea la carpeta backend/vision/ y un __init__.py vacío si no existen)
 """
 
 import os
 import cv2
 import joblib
 
-from APP.modelo.landmarks import crear_detector, extraer_landmarks_de_frame
+from modelo.landmarks import crear_detector, extraer_landmarks_de_frame
 import config
 
 # Se cargan una sola vez y se reutilizan entre peticiones (evita releer el

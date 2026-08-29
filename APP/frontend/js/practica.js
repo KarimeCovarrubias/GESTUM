@@ -1,20 +1,27 @@
-// frontend/js/practica.js
-
-const INTERVALO_MS = 900; // cada cuánto se manda un frame a evaluar
-const ESPERA_TRAS_CORRECTO_MS = 1200;
+const INTERVALO_MS = 900; // cada cuánto se manda un frame a evaluar mientras se busca la seña
+const VIDAS_INICIALES = 5;
 
 let indiceActual = 0;
+let vidas = VIDAS_INICIALES;
 let evaluando = false;   // evita mandar un frame mientras el anterior sigue en vuelo
-let pausado = false;     // se pausa brevemente tras acertar, antes de pasar a la siguiente letra
+let pausado = false;     // se pausa mientras se muestra la barra de "¡Correcto!"
 let intervaloId = null;
 
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
-const overlay = document.getElementById('feedback-overlay');
+const camaraOverlay = document.getElementById('camara-overlay');
 const letraObjetivoEl = document.getElementById('letra-objetivo');
-const progresoTexto = document.getElementById('progreso-texto');
 const progresoFill = document.getElementById('progreso-fill');
+const vidasValEl = document.getElementById('vidas-val');
 const pantallaCompleta = document.getElementById('pantalla-completa');
+const referenciaPlaceholder = document.getElementById('referencia-placeholder');
+const referenciaImg = document.getElementById('referencia-img');
+
+const feedbackBar = document.getElementById('feedback-bar');
+const feedbackIcon = document.getElementById('feedback-icon');
+const feedbackTitulo = document.getElementById('feedback-titulo');
+const feedbackSub = document.getElementById('feedback-sub');
+const btnContinuar = document.getElementById('btn-continuar');
 
 function letraActual() {
     return window.LECCION.letras[indiceActual];
@@ -22,20 +29,42 @@ function letraActual() {
 
 function actualizarProgresoUI() {
     const total = window.LECCION.letras.length;
-    progresoTexto.textContent = `${indiceActual} / ${total}`;
     progresoFill.style.width = total ? `${(indiceActual / total) * 100}%` : '0%';
     letraObjetivoEl.textContent = letraActual() || '';
+    vidasValEl.textContent = vidas;
+    actualizarReferencia();
+}
+
+// Muestra la imagen de referencia de la letra si existe en /static/imagenes/abecedario/<LETRA>.png,
+// o el placeholder si todavía no hay material para esa letra.
+function actualizarReferencia() {
+    const letra = letraActual();
+    if (!letra) return;
+
+    const ruta = `../frontend/imagenes/abecedario/${letra}.png`;
+    const probeImg = new Image();
+    probeImg.onload = () => {
+        referenciaImg.src = ruta;
+        referenciaImg.hidden = false;
+        referenciaPlaceholder.hidden = true;
+    };
+    probeImg.onerror = () => {
+        console.warn(`No se encontró la imagen para la letra: ${letra} en la ruta ${ruta}`)
+        referenciaImg.hidden = true;
+        referenciaPlaceholder.hidden = false;
+    };
+    probeImg.src = ruta;
 }
 
 async function iniciarCamara() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         video.srcObject = stream;
-        overlay.textContent = 'Buscando tu mano…';
+        camaraOverlay.textContent = 'Buscando tu mano…';
         intervaloId = setInterval(capturarYEvaluar, INTERVALO_MS);
     } catch (error) {
         console.error('No se pudo acceder a la cámara:', error);
-        overlay.textContent = 'No se pudo acceder a la cámara. Revisa los permisos del navegador.';
+        camaraOverlay.textContent = 'No se pudo acceder a la cámara. Revisa los permisos del navegador.';
     }
 }
 
@@ -65,7 +94,7 @@ async function capturarYEvaluar() {
         });
 
         const data = await respuesta.json();
-        mostrarResultado(data);
+        procesarResultado(data);
     } catch (error) {
         console.error('Error evaluando el frame:', error);
     } finally {
@@ -73,64 +102,75 @@ async function capturarYEvaluar() {
     }
 }
 
-function mostrarResultado(data) {
+function procesarResultado(data) {
     if (!data.ok) {
-        overlay.textContent = 'Ocurrió un error evaluando la seña.';
-        overlay.className = 'feedback feedback--info';
+        camaraOverlay.textContent = 'Ocurrió un error evaluando la seña.';
         return;
     }
 
     if (!data.mano_detectada) {
-        overlay.textContent = 'No se detecta tu mano';
-        overlay.className = 'feedback feedback--info';
+        camaraOverlay.textContent = 'No se detecta tu mano';
         return;
     }
 
     if (!data.modelo_listo) {
-        overlay.textContent = 'El modelo todavía no está entrenado';
-        overlay.className = 'feedback feedback--info';
+        camaraOverlay.textContent = 'El modelo todavía no está entrenado';
         return;
     }
 
     if (data.correcto) {
-        overlay.textContent = '¡Correcto! ✓';
-        overlay.className = 'feedback feedback--ok';
-        avanzarSiguienteLetra();
+        camaraOverlay.textContent = '¡Correcto! ✓';
+        mostrarBarraExito();
     } else {
-        overlay.textContent = `Detecté: ${data.prediccion}`;
-        overlay.className = 'feedback feedback--error';
+        camaraOverlay.textContent = `Detecté: ${data.prediccion}`;
+        registrarFallo();
     }
 }
 
-function avanzarSiguienteLetra() {
+function registrarFallo() {
+    // Cosmético por ahora: las vidas no se guardan en el backend todavía,
+    // solo bajan visualmente durante la sesión de práctica actual.
+    vidas = Math.max(0, vidas - 1);
+    vidasValEl.textContent = vidas;
+}
+
+function mostrarBarraExito() {
     pausado = true;
-    setTimeout(() => {
-        indiceActual += 1;
-        pausado = false;
 
-        if (indiceActual >= window.LECCION.letras.length) {
-            finalizarLeccion();
-            return;
-        }
+    feedbackBar.className = 'feedback-bar feedback-bar--ok';
+    feedbackIcon.textContent = '✓';
+    feedbackTitulo.textContent = '¡Correcto!';
+    feedbackSub.textContent = `Dominaste la letra ${letraActual()}`;
+    feedbackBar.hidden = false;
+}
 
-        actualizarProgresoUI();
-        overlay.textContent = 'Buscando tu mano…';
-        overlay.className = 'feedback';
-    }, ESPERA_TRAS_CORRECTO_MS);
+function avanzarSiguienteLetra() {
+    feedbackBar.hidden = true;
+    indiceActual += 1;
+    pausado = false;
+
+    if (indiceActual >= window.LECCION.letras.length) {
+        finalizarLeccion();
+        return;
+    }
+
+    actualizarProgresoUI();
+    camaraOverlay.textContent = 'Buscando tu mano…';
 }
 
 function finalizarLeccion() {
     if (intervaloId) clearInterval(intervaloId);
     actualizarProgresoUI();
-    document.querySelector('.camara-box').hidden = true;
-    document.querySelector('.progreso-leccion').hidden = true;
+    document.querySelector('.practica-grid').hidden = true;
     document.querySelector('.letra-actual').hidden = true;
     pantallaCompleta.hidden = false;
 }
 
+btnContinuar.addEventListener('click', avanzarSiguienteLetra);
+
 document.addEventListener('DOMContentLoaded', () => {
     if (!window.LECCION.letras || !window.LECCION.letras.length) {
-        overlay.textContent = 'Esta lección todavía no tiene letras configuradas.';
+        camaraOverlay.textContent = 'Esta lección todavía no tiene letras configuradas.';
         return;
     }
     actualizarProgresoUI();
