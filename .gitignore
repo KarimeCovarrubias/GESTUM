@@ -1,0 +1,24 @@
+# Entorno virtual (nunca se versiona, se regenera con requirements.txt)
+venv/
+env/
+.venv/
+
+# Cachés de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Base de datos local (datos de usuarios reales, no debe subirse)
+backend/datos/*.db
+
+# Dataset y modelo entrenado (pesados, cada quien los genera localmente)
+modelo/datos/
+modelo/*.pkl
+
+# Editor / SO
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Variables de entorno / secretos
+.env
