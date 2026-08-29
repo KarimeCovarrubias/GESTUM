@@ -1,0 +1,20 @@
+# Ejemplo
+    venv\Scripts\activate
+    venv\Scripts\activate : No se puede cargar el archivo C:..\venv\Scripts\Activate.ps1 porque la ejecución de scripts está deshabilitada en este sistema. Para obtener más 
+    información, consulta el tema about_Execution_Policies en https:/go.microsoft.com/fwlink/?LinkID=135170.
+    En línea: 1 Carácter: 1
+    + venv\Scripts\activate
+    + ~~~~~~~~~~~~~~~~~~~~~
+        + CategoryInfo          : SecurityError: (:) [], PSSecurityException
+        + FullyQualifiedErrorId : UnauthorizedAccess
+
+# SOLUCIÓN
+    Corre este comando una sola vez en esa misma terminal de PowerShell:
+        Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+    Te va a preguntar algo como ¿Desea cambiar la directiva de ejecución? — escribe S (sí) y Enter.
+    Esto permite correr scripts locales (como el de activar tu venv) sin comprometer la seguridad de tu sistema, ya que solo afecta tu usuario, no la máquina completa.
+
+    Después de eso, vuelve a intentar:
+        powershell
+        venv\Scripts\activate

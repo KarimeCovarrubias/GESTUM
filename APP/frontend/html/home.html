@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <title>👉 GESTUM</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_home.css') }}">
+        <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    </head>
+    <body>
+        <header class="navbar">
+            <!-- Izquierda: Marca -->
+            <h1 class="logo_home">
+                <img src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Logo GESTUM">
+
+                <div class="slogan">
+                    <span class="title">GESTUM</span>
+                    <span class="subtitle">Para que ninguna voz se quede sin escuchar</span>
+                </div>
+            </h1>
+
+            <!-- Derecha: Navegación -->
+            <nav class="nav-links">
+                <a href="{{ url_for('vista_nosotros') }}" class="link-nosotros">Nosotros</a>
+                <a href="{{ url_for('vista_login') }}" class="btn-login">Iniciar sesión</a>
+                <a href="{{ url_for('vista_registro') }}" class="btn-registrar">Crear cuenta</a>
+            </nav>
+        </header>
+
+        <!-- Sección Principal -->
+        <main class="seccion-principal">
+            <div class="seccion-principal-contenido">
+                <h2>Aprende Lengua de señas Mexicana (LSM) con Inteligencia Artificial</h2>
+                <p>
+                    Practica tus señas en tiempo real utilizando tu cámara. Nuestra IA te evalúa 
+                    al instante para ayudarte a comunicarte sin barreras.
+                </p>
+
+                <div class="seccion-principal-btns">
+                    <a href="{{ url_for('vista_registro') }}" class="btn-empezar">Empezar a practicar gratis</a>
+                    <a href="#" class="btn-funcionamiento">Ver cómo funciona</a>
+                </div>
+
+                <div class="imagen-camara">
+                    <div class="camara-vivo">
+                        <span class="badge-live">IA en vivo</span>
+                        <p>Reconocimiento de señas interactivo</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sección de características -->
+        <section class="seccion-caracteristicas">
+            <div class="tarjeta-caracteristica">
+                <h3>Evaluación con IA</h3>
+                <p>Retroalimentación instantánea en tu postura y gestos gracias a visión por computadora.</p>
+            </div>
+
+            <div class="tarjeta-caracteristica">
+                <h3>Abecedario e iniciales</h3>
+                <p>Domina las bases de la LSM paso a paso con lecciones dinámicas y guiadas.</p>
+            </div>
+
+            <div class="tarjeta-caracteristica">
+                <h3>A tu propio ritmo</h3>
+                <p>Practica desde cualquier lugar, repite los ejercicios y mide tus avances diariamente.</p>
+            </div>
+        </section>
+
+        <!-- Pie de página / Footer -->
+        <footer class="footer">
+            <div class="footer-container">
+                <!-- Columna 1: Información de la marca -->
+                <div class="footer-brand">
+                    <h3>GESTUM</h3>
+                    <p>Plataforma educativa interactiva para el aprendizaje de la Lengua de Señas Mexicana (LSM) con Inteligencia Artificial.</p>
+                </div>
+
+                <!-- Columna 2: Enlaces rápidos -->
+                <div class="footer-links">
+                    <h4>Navegación</h4>
+                    <ul>
+                        <li><a href="{{ url_for('home') }}">Inicio</a></li>
+                        <li><a href="{{ url_for('vista_nosotros') }}">Nosotros</a></li>
+                        <li><a href="#">Módulos (Abecedario)</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3: Contacto -->
+                <div class="footer-contact">
+                    <h4>Contacto</h4>
+                    <p>📧 gestum@gmail.com</p>
+                    <p>📍 Culiacán, Sinaloa, México</p>
+                </div>
+            </div>
+
+            <!-- Línea inferior de derechos reservados -->
+            <div class="footer-bottom">
+                <p>&copy; 2026 GESTUM. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+    </body>
+</html>

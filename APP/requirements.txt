@@ -1,0 +1,9 @@
+flask
+opencv-python
+mediapipe
+scikit-learn
+bcrypt
+streamlit-webrtc
+joblib
+pandas
+sqlite-web

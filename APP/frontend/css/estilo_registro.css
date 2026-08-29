@@ -1,0 +1,329 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body.auth-body {
+    background-color: #0d1b2a;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(26, 77, 128, 0.4) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(196, 139, 0, 0.25) 0px, transparent 50%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    font-family: Arial, sans-serif;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Luces de Fondo */
+.bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    z-index: 0;
+    opacity: 0.6;
+}
+
+.glow-1 {
+    width: 320px;
+    height: 320px;
+    background: #1a4d80;
+    top: 5%;
+    left: 10%;
+}
+
+.glow-2 {
+    width: 280px;
+    height: 280px;
+    background: #c48b00;
+    bottom: 5%;
+    right: 10%;
+}
+
+.auth-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px; /* Un poco más ancho para albergar las dos columnas */
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 24px;
+    padding: 36px 32px;
+    width: 100%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25),
+                0 0 50px rgba(26, 77, 128, 0.15);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.auth-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    margin-bottom: 12px;
+}
+
+.auth-logo img {
+    height: 40px;
+    width: auto;
+}
+
+.auth-logo .title {
+    font-size: 1.7rem;
+    font-weight: bold;
+    color: #1a4d80;
+    letter-spacing: 1px;
+}
+
+.auth-header h2 {
+    color: #0d1b2a;
+    font-size: 1.35rem;
+    margin-bottom: 4px;
+}
+
+.auth-header p {
+    color: #666666;
+    font-size: 0.85rem;
+}
+
+/* Formulario */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-group-small {
+    flex: 0.45 !important;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #333333;
+}
+
+.input-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    width: 18px;
+    height: 18px;
+    color: #888888;
+    pointer-events: none;
+    transition: color 0.2s;
+}
+
+.input-icon-wrapper input {
+    width: 100%;
+    padding: 11px 14px;
+    background-color: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: #1e293b;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+/* Padding para inputs que sí llevan icono a la izquierda */
+.input-icon-wrapper:has(.input-icon) input {
+    padding-left: 38px;
+}
+
+.input-icon-wrapper input:focus {
+    background-color: #ffffff;
+    border-color: #1a4d80;
+    box-shadow: 0 0 0 3px rgba(26, 77, 128, 0.12);
+}
+
+.input-icon-wrapper input:focus + .input-icon,
+.input-icon-wrapper:focus-within .input-icon {
+    color: #1a4d80;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #888888;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password:hover {
+    color: #1a4d80;
+}
+
+.required-note {
+    font-size: 0.72rem;
+    color: #888888;
+    margin-top: -4px;
+}
+
+/* Botón Principal */
+.btn-primary-glow {
+    background: linear-gradient(135deg, #1a4d80 0%, #13385c 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(26, 77, 128, 0.35);
+    transition: all 0.2s ease;
+    margin-top: 4px;
+    text-decoration: none;
+}
+
+.btn-primary-glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(26, 77, 128, 0.45);
+    background: linear-gradient(135deg, #1f5b96 0%, #17436e 100%);
+}
+
+/* Aviso de Privacidad y Divisor Flexbox */
+.privacy-notice {
+    font-size: 0.75rem;
+    color: #666666;
+    text-align: center;
+    margin-top: 14px;
+    line-height: 1.4;
+}
+
+.privacy-notice a {
+    color: #1a4d80;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.privacy-notice a:hover {
+    text-decoration: underline;
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0 14px 0;
+    gap: 12px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #e2e8f0;
+}
+
+.auth-divider span {
+    font-size: 0.78rem;
+    color: #888888;
+    background: transparent;
+    white-space: nowrap;
+}
+
+.btn-outline {
+    display: block;
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    border: 1.5px solid #1a4d80;
+    border-radius: 10px;
+    color: #1a4d80;
+    font-weight: bold;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+    background-color: rgba(26, 77, 128, 0.05);
+    border-color: #13385c;
+    color: #13385c;
+}
+
+/* Responsivo para pantallas pequeñas */
+@media (max-width: 480px) {
+    .form-row {
+        flex-direction: column;
+        gap: 14px;
+    }
+    
+    .form-group-small {
+        flex: 1 !important;
+    }
+
+    .glass-card {
+        padding: 28px 20px;
+    }
+}
+
+/* Botón de regresar */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #1a4d80;
+    font-size: 0.82rem;
+    font-weight: bold;
+    text-decoration: none;
+    align-self: flex-start;
+    margin-bottom: 12px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.back-link:hover {
+    background-color: rgba(26, 77, 128, 0.08);
+    color: #13385c;
+}
+
+.back-link svg {
+    transition: transform 0.2s ease;
+}
+
+.back-link:hover svg {
+    transform: translateX(-3px);
+}

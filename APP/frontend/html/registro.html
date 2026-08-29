@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta - GESTUM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_registro.css') }}">
+</head>
+<body class="auth-body">
+
+    <!-- Círculos luminosos decorativos de fondo -->
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <div class="auth-wrapper">
+        <main class="glass-card">
+            <!-- Botón de retorno arriba a la izquierda -->
+            <a href="{{ url_for('home') }}" class="back-link" title="Volver al inicio">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Volver al inicio</span>
+            </a>
+            
+            <!-- Encabezado con Logo -->
+            <div class="auth-header">
+                <a href="{{ url_for('home') }}" class="auth-logo">
+                    <img src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Logo">
+                    <span class="title">GESTUM</span>
+                </a>
+                <h2>Crea tu cuenta</h2>
+                <p>Empieza a aprender Lengua de Señas Mexicana hoy</p>
+            </div>
+
+            <!-- Formulario de Registro -->
+            <form class="auth-form">
+                
+                <!-- Nombre -->
+                <div class="form-group">
+                    <label for="nombre">Nombre(s) *</label>
+                    <div class="input-icon-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <input type="text" id="nombre" name="nombre" placeholder="Ej. Ana" required>
+                    </div>
+                </div>
+
+                <!-- Apellidos en paralelo -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="apellidoP">Apellido Paterno *</label>
+                        <div class="input-icon-wrapper">
+                            <input type="text" id="apellidoP" name="apellidoP" placeholder="Ej. Pérez" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="apellidoM">Apellido Materno</label>
+                        <div class="input-icon-wrapper">
+                            <input type="text" id="apellidoM" name="apellidoM" placeholder="Ej. García">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edad y Nombre de Usuario -->
+                <div class="form-row">
+                    <div class="form-group form-group-small">
+                        <label for="edad">Edad *</label>
+                        <div class="input-icon-wrapper">
+                            <input type="number" id="edad" name="edad" min="5" max="120" placeholder="20" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nombreUsuario">Usuario *</label>
+                        <div class="input-icon-wrapper">
+                            <input type="text" id="nombreUsuario" name="nombreUsuario" placeholder="Ej. ana_perez123" required autocomplete="username">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contraseña -->
+                <div class="form-group">
+                    <label for="contrasena">Contraseña *</label>
+                    <div class="input-icon-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" id="contrasena" name="contrasena" placeholder="Mínimo 8 caracteres" required autocomplete="new-password">
+                        <button type="button" class="toggle-password" onclick="toggleVisibility('contrasena', this)" aria-label="Mostrar u ocultar contraseña">
+                            <svg class="eye-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirmar Contraseña -->
+                <div class="form-group">
+                    <label for="confirmarContrasena">Confirmar contraseña *</label>
+                    <div class="input-icon-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" id="confirmarContrasena" name="confirmarContrasena" placeholder="Repite tu contraseña" required autocomplete="new-password">
+                        <button type="button" class="toggle-password" onclick="toggleVisibility('confirmarContrasena', this)" aria-label="Mostrar u ocultar contraseña">
+                            <svg class="eye-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <p class="required-note">* Campos obligatorios</p>
+
+                <!-- Botón Registro -->
+                <button type="submit" class="btn-primary-glow">
+                    <span>Registrarme</span>
+                </button>
+            </form>
+
+            <!-- Aviso de Términos -->
+            <p class="privacy-notice">
+                Al registrarte, aceptas nuestros <a href="{{ url_for('vista_terminos') }}">Términos</a> y <a href="{{ url_for('vista_privacidad') }}">Aviso de Privacidad</a>.
+            </p>
+
+            <!-- Divisor -->
+            <div class="auth-divider">
+                <span>¿Ya tienes cuenta?</span>
+            </div>
+
+            <a href="{{ url_for('vista_login') }}" class="btn-outline">Iniciar sesión</a>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+</html>

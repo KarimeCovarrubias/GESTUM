@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - GESTUM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_login.css') }}">
+</head>
+<body class="auth-body">
+
+    <!-- Círculos luminosos decorativos de fondo -->
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <!-- Envoltorio principal centrado -->
+    <div class="auth-wrapper">
+        <main class="glass-card">
+            <!-- Botón de retorno arriba a la izquierda -->
+            <a href="{{ url_for('home') }}" class="back-link" title="Volver al inicio">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                <span>Volver al inicio</span>
+            </a>
+
+            <!-- Header centrado -->
+            <div class="auth-header">
+                <a href="{{ url_for('home') }}" class="auth-logo">
+                    <img src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Logo">
+                    <span class="title">GESTUM</span>
+                </a>
+                <h2>Bienvenido de nuevo</h2>
+                <p>Tu espacio para aprender y practicar Lengua de Señas Mexicana</p>
+            </div>
+
+            <!-- Formulario de Login -->
+            <form class="auth-form" action="#" method="POST">
+                <div class="form-group">
+                    <label for="nombreUsuario">Usuario</label>
+                    <div class="input-icon-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <input type="text" id="nombreUsuario" name="nombreUsuario" placeholder="Tu nombre de usuario" required autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-row">
+                        <label for="contrasena">Contraseña</label>
+                        <a href="#" class="forgot-link">¿La olvidaste?</a>
+                    </div>
+                    <div class="input-icon-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <input type="password" id="contrasena" name="contrasena" placeholder="••••••••" required autocomplete="current-password">
+                        <button type="button" class="toggle-password" onclick="toggleVisibility('contrasena', this)" aria-label="Mostrar u ocultar contraseña">
+                            <svg class="eye-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Botón Iniciar sesión -->
+                <button type="submit" class="btn-primary-glow">
+                    <span>Iniciar sesión</span>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>¿Aún no tienes cuenta?</span>
+            </div>
+
+            <a href="{{ url_for('vista_registro') }}" class="btn-outline">Crear una cuenta gratis</a>
+        </main>
+
+        <!-- Pie legal -->
+        <footer class="legal-footer">
+            <p>&copy; 2026 GESTUM. Todos los derechos reservados.</p>
+            <div class="legal-links">
+                <a href="{{ url_for('vista_privacidad') }}">Aviso de Privacidad</a>
+                <span>•</span>
+                <a href="{{ url_for('vista_terminos') }}">Términos de Servicio</a>
+            </div>
+        </footer>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros - GESTUM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_nosotros.css') }}">
+</head>
+<body class="about-body">
+
+    <!-- Navegación superior -->
+    <header class="navbar">
+        <a href="{{ url_for('home') }}" class="logo">
+            <img src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Logo Gestum">
+            <span class="title">GESTUM</span>
+        </a>
+        <nav class="nav-links">
+            <a href="{{ url_for('home') }}">Inicio</a>
+            <a href="{{ url_for('vista_nosotros') }}" class="active">Nosotros</a>
+            <a href="{{ url_for('vista_login') }}" class="btn-nav-login">Iniciar Sesión</a>
+        </nav>
+    </header>
+
+    <main class="about-container">
+        
+        <!-- Sección de Encabezado Principal -->
+        <section class="hero-section">
+            <h1>Sobre GESTUM</h1>
+            <p class="subtitle">Rompiendo barreras de comunicación a través del aprendizaje interactivo de la Lengua de Señas Mexicana (LSM).</p>
+        </section>
+
+        <!-- Sección Misión y Visión -->
+        <section class="cards-grid">
+            <div class="card">
+                <div class="icon-box">🎯</div>
+                <h2>Nuestra Misión</h2>
+                <p>Facilitar el aprendizaje de la Lengua de Señas Mexicana mediante una plataforma tecnológica accesible, interactiva e intuitiva, promoviendo la inclusión e integración social de la comunidad sorda.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon-box">🚀</div>
+                <h2>Nuestra Visión</h2>
+                <p>Ser la plataforma educativa referente a nivel nacional en la enseñanza de la LSM, construyendo un puente de comunicación empático y sin barreras en la sociedad.</p>
+            </div>
+        </section>
+
+        <!-- Sección Valores / Pilares -->
+        <section class="values-section">
+            <h2>Nuestros Valores</h2>
+            <div class="values-grid">
+                <div class="value-item">
+                    <h3>🤝 Inclusión</h3>
+                    <p>Fomentamos espacios accesibles para que cualquier persona pueda aprender a comunicarse sin límites.</p>
+                </div>
+                <div class="value-item">
+                    <h3>💡 Innovación</h3>
+                    <p>Utilizamos herramientas digitales modernas para ofrecer una experiencia educativa dinámica y efectiva.</p>
+                </div>
+                <div class="value-item">
+                    <h3>💙 Empatía</h3>
+                    <p>Promovemos la conciencia y el respeto hacia la cultura sorda y la diversidad lingüística.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="main-footer">
+        <p>&copy; 2026 GESTUM. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>

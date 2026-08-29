@@ -1,0 +1,342 @@
+.logo_home {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+}
+
+.logo_home img {
+    width: 200px;
+    height: auto;
+}
+
+.slogan {
+    display: flex;
+    flex-direction: column;
+}
+
+.slogan .title {
+    font-family:'Segoe UI';
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #134b83;
+    line-height: 1.1;
+}
+
+.slogan .subtitle {
+    font-family: 'Segoe UI';
+    font-size: 1rem;
+    font-weight: bold;
+    color: darkgoldenrod;
+    margin-top: 4px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333333;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+/* Cambiar color del texto de los botones al pasar el cursor */
+.nav-links a:hover {
+    color: #0082AD;
+}
+
+/* Enlace Nosotros*/
+.nav-links .link-nosotros {
+    padding: 8px 12px;
+    border: 1px solid #0082AD;
+    border-radius: 50px;
+    color: #333333;
+    font-weight: bold;
+    font-family: 'Segoe UI';
+}
+
+.nav-links .link-nosotros:hover {
+    color: rgb(126, 92, 5);
+}
+
+/* Botón Iniciar Sesión */
+.nav-links .btn-login {
+    padding: 8px 16px;
+    border: 1px solid #1a4d80;
+    border-radius: 50px;
+    color: white;
+    font-weight: bold;
+    background-color: #1a4d80;
+    font-family: 'Segoe UI';
+}
+
+.nav-links .btn-login:hover {
+    background-color: #f0f4f8;
+}
+
+/* Botón Registrar */
+.nav-links .btn-registrar {
+    padding: 8px 16px;
+    border: 1px solid darkgoldenrod;
+    border-radius: 50px;
+    color: white;
+    font-weight: bold;
+    background-color: darkgoldenrod;
+    font-family: 'Segoe UI';
+}
+
+.nav-links .btn-registrar:hover {
+    background-color: #f0f4f8;
+}
+
+/* Representación Visual de la Cámara / IA */
+.imagen-camara {
+    margin-top: 30px;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.camara-vivo {
+    width: 100%;
+    max-width: 420px;
+    height: 280px;
+    background: linear-gradient(135deg, #eef4fc 0%, #d8e5f8 100%);
+    border: 3px dashed #1a4d80;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.badge-live {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+/* ESTILOS DE CARACTERÍSTICAS*/
+.seccion-principal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 40px;
+}
+
+.seccion-principal-contenido {
+    flex: 1;
+}
+
+.seccion-principal-contenido h2 {
+    font-family: Cambria;
+    font-size: 2.8rem;
+    color: #1a4d80;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.seccion-principal-contenido p {
+    font-family: Cambria;
+    font-size: 1.15rem;
+    color: #555555;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.seccion-principal-btns {
+    display: flex;
+    gap: 15px;
+}
+
+/*btn Empezar a practicar gratis*/
+.btn-empezar {
+    background-color: darkgoldenrod;
+    padding: 26px 24px;
+    color: white;
+    border-radius: 80px;
+    text-decoration: none;
+    font-weight: bold;
+    font-family:'Segoe UI';
+    box-shadow: 0 4px 12px rgba(26, 77, 128, 0.3);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-empezar:hover {
+    background-color: #13385c;
+    transform: translateY(-2px);
+}
+
+/*btn Ver cómo funciona*/
+.btn-funcionamiento {
+    background-color:#0082AD;
+    padding: 26px 24px;
+    color: white;
+    border-radius: 80px;
+    text-decoration: none;
+    font-weight: bold;
+    font-family:'Segoe UI';
+    box-shadow: 0 4px 12px rgba(26, 77, 128, 0.3);
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-funcionamiento:hover {
+    background-color: #1a4d80;
+    transform: translateY(-2px);
+}
+
+/* Sección de Tarjetas de Características */
+.seccion-caracteristicas {
+    display: flex;
+    justify-content: space-between;
+    gap: 25px;
+    padding: 40px 80px 80px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tarjeta-caracteristica {
+    flex: 1;
+    background-color: #fdfdfd;
+    padding: 30px 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(26, 77, 128, 0.03);
+    transition: transform 0.2s;
+}
+
+.tarjeta-caracteristica:hover {
+    transform: translate(-5px);
+}
+
+.tarjeta-caracteristica h3 {
+    font-family: 'Segoe UI';
+    font-size: 1.25rem;
+    color: #1a4d80;
+    margin-bottom: 10px;
+}
+
+.tarjeta-caracteristica p {
+    font-family: 'Segoe UI';
+    font-size: 0.9rem;
+    color: #666666;
+    line-height: 1.5;
+}
+
+/* Contenedor principal del footer */
+.footer {
+    background-color: #1a4d80; /* Azul principal de la marca */
+    color: #ffffff;
+    padding: 50px 0 20px 0;
+    font-family: Arial, sans-serif;
+    margin-top: 60px;
+}
+
+/* Distribución en columnas */
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+/* Columna de la Marca */
+.footer-brand {
+    flex: 2;
+}
+
+.footer-brand h3 {
+    font-size: 1.6rem;
+    color: #ffffff;
+    margin-bottom: 12px;
+}
+
+.footer-brand p {
+    color: #d1e2f4;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 340px;
+}
+
+/* Columna de Enlaces y Contacto */
+.footer-links, 
+.footer-contact {
+    flex: 1;
+}
+
+.footer-links h4, 
+.footer-contact h4 {
+    font-size: 1.1rem;
+    color: #c48b00; /* Dorado para destacar encabezados */
+    margin-bottom: 15px;
+}
+
+.footer-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: #d1e2f4;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+}
+
+.footer-contact p {
+    color: #d1e2f4;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+/* Separador y derechos de autor */
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+}
+
+.footer-bottom p {
+    color: #a4c4e8;
+    font-size: 0.85rem;
+    margin: 0;
+}

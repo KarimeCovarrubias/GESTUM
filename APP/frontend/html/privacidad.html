@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviso de Privacidad - GESTUM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_privacidad-terminos.css') }}">
+</head>
+<body class="legal-body">
+
+    <!-- Navegación superior -->
+    <header class="navbar">
+        <a href="{{ url_for('home') }}" class="logo">
+            <img src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Logo Gestum">
+            <span class="title">GESTUM</span>
+        </a>
+        <nav class="nav-links">
+            <a href="{{ url_for('home') }}">Inicio</a>
+            <a href="{{ url_for('vista_nosotros') }}">Nosotros</a>
+            <a href="{{ url_for('vista_login') }}" class="btn-nav-login">Iniciar Sesión</a>
+        </nav>
+    </header>
+
+    <!-- Contenedor Principal -->
+    <div class="legal-container">
+        <!-- Botón de retorno alineado -->
+        <a href="javascript:history.back()" class="back-link" title="Volver a la página anterior">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Volver</span>
+        </a>
+
+        <!-- Contenido Legal -->
+        <main class="legal-content">
+            <h1>Aviso de Privacidad</h1>
+            <p>En <strong>GESTUM</strong>, respetamos su privacidad y estamos comprometidos con la protección de sus datos personales.</p>
+
+            <h2>1. Datos Recabados</h2>
+            <p>Para la creación de su cuenta y el uso de la plataforma, recabamos:</p>
+            <ul>
+                <li>Nombre(s), Apellido Paterno y Apellido Materno.</li>
+                <li>Edad.</li>
+                <li>Nombre de usuario y contraseña.</li>
+            </ul>
+
+            <h2>2. Finalidad del Tratamiento de Datos</h2>
+            <p>Los datos recabados serán utilizados para:</p>
+            <ul>
+                <li>Gestión de registro y autenticación de usuarios.</li>
+                <li>Personalización del progreso en el aprendizaje de Lengua de Señas Mexicana.</li>
+                <li>Mejora continua del servicio.</li>
+            </ul>
+
+            <h2>3. Protección de Datos</h2>
+            <p>GESTUM implementa medidas de seguridad técnicas y administrativas para proteger sus datos personales contra acceso no autorizado, pérdida o alteración.</p>
+        </main>
+    </div>
+
+    <!-- Pie de página -->
+    <footer class="main-footer">
+        <p>&copy; 2026 GESTUM. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>
