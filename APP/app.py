@@ -3,15 +3,15 @@ import numpy as np
 import cv2
 
 from backend.database.curriculum import (
-    sembrar_letras, obtener_progreso_usuario, obtener_leccion, 
-    obtener_siguiente_leccion_id, obtener_leccion_actual_usuario
+    sembrar_letras, obtener_progreso_usuario, obtener_leccion,
+    obtener_siguiente_leccion_id, obtener_leccion_actual_usuario, XP_POR_LETRA
 )
 from backend.database.progreso import registrar_intento
 from backend.vision.evaluador import evaluar_frame
 
 from flask import Flask, request, jsonify, url_for, render_template, session, redirect
 from backend.database.conexion import inicializar_bd, obtener_conexion
-from backend.database.usuarios import crear_usuario, verificar_login
+from backend.database.usuarios import crear_usuario, verificar_login, actualizar_racha_y_xp
 
 app = Flask(
     __name__,
@@ -158,11 +158,11 @@ def vista_terminos():
 def api_progreso():
     if 'usuario_id' not in session:
         return jsonify({'ok': False}), 401
-    
+
     usuario_id = session['usuario_id']
     bloques = obtener_progreso_usuario(usuario_id)
     leccion_actual = obtener_leccion_actual_usuario(usuario_id)
-    
+
     url_continuar = "/user-home"
     if leccion_actual:
         # Extraer el ID base (remover '-teoria' o '-practica' para armar la URL)
@@ -175,7 +175,7 @@ def api_progreso():
             url_continuar = f"/practica?leccion={base_id}"
 
     return jsonify({
-        'ok': True, 
+        'ok': True,
         'bloques': bloques,
         'url_continuar': url_continuar
     })
@@ -198,7 +198,7 @@ def vista_practica():
     leccion = obtener_leccion(leccion_id)
     if leccion is None:
         return redirect('/user-home')
-    
+
     # Si obtener_siguiente_leccion_id retorna None o vacío, enviamos /user-home
     siguiente_id = obtener_siguiente_leccion_id(leccion_id)
     siguiente_url = f"/practica?leccion={siguiente_id}" if siguiente_id else "/user-home"
@@ -235,6 +235,9 @@ def api_practica_evaluar():
     if resultado['mano_detectada'] and resultado['modelo_listo']:
         resultado_texto = 'correcto' if resultado['correcto'] else 'incorrecto'
         registrar_intento(session['usuario_id'], letra_objetivo, resultado_texto)
+
+        if resultado_texto == 'correcto':
+            actualizar_racha_y_xp(session['usuario_id'], xp_ganado=XP_POR_LETRA)
 
     return jsonify({'ok': True, **resultado})
 

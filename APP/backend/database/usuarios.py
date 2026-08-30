@@ -4,7 +4,7 @@ actualizar racha y sumar puntos de experiencia (XP).
 """
 
 import bcrypt
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from backend.database.conexion import obtener_conexion
 
 
@@ -14,15 +14,19 @@ def crear_usuario(nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena)
     La contraseña se guarda hasheada, nunca en texto plano.
     """
     contrasena_hash = bcrypt.hashpw(contrasena.encode("utf-8"), bcrypt.gensalt())
+    # Se pasa explícita la hora LOCAL de Python; si se deja que SQLite la ponga
+    # sola con datetime('now') queda en UTC, adelantada varias horas respecto
+    # a México.
+    fecha_registro = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     conexion = obtener_conexion()
     cursor = conexion.cursor()
 
     try:
         cursor.execute("""
-            INSERT INTO usuario (nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena_hash)
-            VALUES (?, ?, ?, ?, ?, ?)
-        """, (nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena_hash.decode("utf-8")))
+            INSERT INTO usuario (nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena_hash, fecha_registro)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena_hash.decode("utf-8"), fecha_registro))
 
         conexion.commit()
         return True, "Cuenta creada correctamente."
