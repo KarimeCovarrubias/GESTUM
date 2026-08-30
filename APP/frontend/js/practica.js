@@ -161,6 +161,7 @@ function avanzarSiguienteLetra() {
     indiceActual += 1;
     pausado = false;
 
+    // Si ya completaste todas las letras de la lección actual
     if (indiceActual >= window.LECCION.letras.length) {
         finalizarLeccion();
         return;
@@ -171,21 +172,45 @@ function avanzarSiguienteLetra() {
 }
 
 function finalizarLeccion() {
-    if (intervaloId) clearInterval(intervaloId);
-    actualizarProgresoUI();
-    document.querySelector('.practica-grid').hidden = true;
-    document.querySelector('.letra-actual').hidden = true;
-    feedbackBar.hidden = true;
-    pantallaCompleta.hidden = false;
+    if (typeof intervaloId !== 'undefined' && intervaloId) {
+        clearInterval(intervaloId);
+    }
+    
+    const video = document.getElementById('video');
+    if (video && video.srcObject) {
+        video.srcObject.getTracks().forEach(track => track.stop());
+    }
+
+    const pantallaCompleta = document.getElementById('pantalla-completa');
+    if (pantallaCompleta) {
+        pantallaCompleta.removeAttribute('hidden');
+    }
 }
 
 btnContinuar.addEventListener('click', avanzarSiguienteLetra);
 
-document.addEventListener('DOMContentLoaded', () => {
+const btnComenzar = document.getElementById('btn-comenzar');
+const pantallaInicio = document.getElementById('pantalla-inicio');
+const practicaContenido = document.getElementById('practica-contenido');
+
+function iniciarPractica() {
     if (!window.LECCION.letras || !window.LECCION.letras.length) {
         camaraOverlay.textContent = 'Sin letras configuradas.';
         return;
     }
     actualizarProgresoUI();
     iniciarCamara();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (btnComenzar && pantallaInicio && practicaContenido) {
+        btnComenzar.addEventListener('click', () => {
+            pantallaInicio.hidden = true;
+            practicaContenido.hidden = false;
+            iniciarPractica();
+        });
+    } else {
+        // Por si esta página se usa sin la pantalla de inicio, arranca directo
+        iniciarPractica();
+    }
 });

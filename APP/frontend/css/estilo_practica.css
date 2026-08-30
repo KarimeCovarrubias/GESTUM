@@ -325,3 +325,181 @@ h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
     width: 16px;
     height: 16px;
 }
+
+/* Pantalla Final*/
+.gestum-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #f8fafc;
+    color: #0b2545;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 99999;
+    padding: 3rem 1.5rem;
+    box-sizing: border-box;
+}
+
+.gestum-overlay[hidden] {
+    display: none !important;
+}
+
+.gestum-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.gestum-badge-icon {
+    font-size: 4rem;
+    background: #eef2f6;
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(11, 37, 69, 0.08);
+}
+
+.gestum-titulo-exito {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #0b2545;
+    margin: 0 0 0.5rem 0;
+}
+
+.gestum-subtitulo-exito {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0 0 2rem 0;
+}
+
+.gestum-stats-grid {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.gestum-stat-card {
+    background-color: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.25rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 130px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.gestum-stat-card .stat-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.gestum-stat-card .stat-val {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0b2545;
+}
+
+.gestum-footer-action {
+    width: 100%;
+    max-width: 550px;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    border-top: 2px solid #e2e8f0;
+    padding-top: 1.5rem;
+}
+
+.btn-gestum-primary {
+    width: 100%;
+    background-color: #139a8c;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 1rem;
+    border-radius: 14px;
+    text-align: center;
+    box-sizing: border-box;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 12px rgba(19, 154, 140, 0.25);
+}
+
+.btn-gestum-primary:hover {
+    background-color: #0f8377;
+}
+
+.btn-gestum-primary:active {
+    transform: translateY(2px);
+}
+
+.btn-gestum-secondary {
+    flex: 1;
+    background-color: #ffffff;
+    color: #0b2545;
+    border: 2px solid #cbd5e1;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.9rem;
+    border-radius: 14px;
+    text-align: center;
+    box-sizing: border-box;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.btn-gestum-secondary:hover {
+    background-color: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.btn-gestum-secondary:active {
+    transform: translateY(2px);
+}
+
+/* Animación para la insignia del emoji */
+.gestum-badge-icon {
+    font-size: 4rem;
+    background: #eef2f6;
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(11, 37, 69, 0.08);
+    
+    /* Agrega la animación continua */
+    animation: celebracionBounce 1.8s ease-in-out infinite;
+}
+
+/* Definición del movimiento (rebote sutil + rotación de fiesta) */
+@keyframes celebracionBounce {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+    25% {
+        transform: translateY(-12px) rotate(-8deg) scale(1.05);
+    }
+    50% {
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+    75% {
+        transform: translateY(-8deg) rotate(8deg) scale(1.05);
+    }
+}

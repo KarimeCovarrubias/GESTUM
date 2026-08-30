@@ -1,6 +1,9 @@
-// frontend/js/user-home.js
-
 document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Elementos del DOM del menú desplegable
+    const avatarBtn = document.getElementById('user-avatar');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    // 2. Cargar datos del usuario y progreso de la plataforma
     try {
         const [respUsuario, respProgreso] = await Promise.all([
             fetch('/api/usuario-actual'),
@@ -18,17 +21,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         actualizarCabecera(usuario);
         renderizarInicio(progreso.bloques);
 
+        // Asignar dinámicamente el destino del botón "Continuar lección"
+        const btnContinuar = document.getElementById('btn-continuar-leccion');
+        if (btnContinuar && progreso.url_continuar) {
+            btnContinuar.href = progreso.url_continuar;
+        }
+
     } catch (error) {
         console.error('Error cargando los datos del usuario:', error);
     }
-});
 
-document.addEventListener('DOMContentLoaded', () => {
-    const avatarBtn = document.getElementById('user-avatar');
-    const userDropdown = document.getElementById('user-dropdown');
-
+    // 3. Control del menú desplegable del avatar
     if (avatarBtn && userDropdown) {
-        // Alternar el menú desplegable al hacer clic en el avatar
         avatarBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             const isExpanded = avatarBtn.getAttribute('aria-expanded') === 'true';
@@ -36,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
             userDropdown.classList.toggle('show');
         });
 
-        // Cerrar el menú si se hace clic en cualquier otra parte de la pantalla
         document.addEventListener('click', (e) => {
             if (!userDropdown.contains(e.target) && e.target !== avatarBtn) {
                 userDropdown.classList.remove('show');
@@ -47,28 +50,35 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function actualizarCabecera(usuario) {
+    const username = usuario.nombreUsuario || usuario.username || usuario.nombre_usuario || usuario.nombre || 'Usuario';
+    const usernameConArroba = `@${username}`;
+
     const tituloHero = document.getElementById('user-greeting');
-    if (tituloHero) tituloHero.textContent = `¡Hola, ${usuario.nombre}!`;
+    if (tituloHero) tituloHero.textContent = `¡Hola, ${usernameConArroba}!`;
+
+    const dropdownUsername = document.getElementById('dropdown-username');
+    if (dropdownUsername) dropdownUsername.textContent = usernameConArroba;
 
     const avatar = document.getElementById('user-avatar');
-    if (avatar && usuario.nombre) avatar.textContent = usuario.nombre.charAt(0).toUpperCase();
+    if (avatar) avatar.textContent = username.charAt(0).toUpperCase();
 
     const rachaEl = document.getElementById('racha-val');
-    if (rachaEl) rachaEl.textContent = usuario.racha;
+    if (rachaEl) rachaEl.textContent = usuario.racha || 0;
 
     const xpEl = document.getElementById('xp-val');
-    if (xpEl) xpEl.textContent = usuario.xp;
+    if (xpEl) xpEl.textContent = usuario.xp || 0;
 }
 
 function renderizarInicio(bloques) {
     const mainContent = document.querySelector('.content');
+    if (!mainContent) return;
     mainContent.innerHTML = '';
 
     const bloqueActivo = bloques.find(b => b.desbloqueado) || bloques[0];
     const heroSub = document.getElementById('hero-sub');
     if (heroSub && bloqueActivo) {
         const completadas = bloqueActivo.lecciones.filter(l => l.estado === 'completada').length;
-        heroSub.textContent = `Vas ${completadas} de ${bloqueActivo.totalLecciones} pasos en ${bloqueActivo.titulo}. Sigue practicando para no perder tu racha.`;
+        heroSub.textContent = `Llevas ${completadas} de ${bloqueActivo.totalLecciones} lecciones en ${bloqueActivo.titulo}. Sigue practicando para no perder tu racha.`;
     }
 
     bloques.forEach(bloque => {
@@ -131,8 +141,6 @@ function renderizarInicio(bloques) {
     });
 }
 
-// El id de cada tile viene como "<idLeccion>-teoria" o "<idLeccion>-practica",
-// así que separamos el sufijo para saber a qué pantalla mandar y con qué id real.
 function iniciarLeccion(idTile) {
     if (idTile.endsWith('-teoria')) {
         const idLeccion = idTile.replace(/-teoria$/, '');

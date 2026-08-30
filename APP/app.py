@@ -3,7 +3,8 @@ import numpy as np
 import cv2
 
 from backend.database.curriculum import (
-    sembrar_letras, obtener_progreso_usuario, obtener_leccion, obtener_siguiente_leccion_id
+    sembrar_letras, obtener_progreso_usuario, obtener_leccion, 
+    obtener_siguiente_leccion_id, obtener_leccion_actual_usuario
 )
 from backend.database.progreso import registrar_intento
 from backend.vision.evaluador import evaluar_frame
@@ -157,8 +158,27 @@ def vista_terminos():
 def api_progreso():
     if 'usuario_id' not in session:
         return jsonify({'ok': False}), 401
-    bloques = obtener_progreso_usuario(session['usuario_id'])
-    return jsonify({'ok': True, 'bloques': bloques})
+    
+    usuario_id = session['usuario_id']
+    bloques = obtener_progreso_usuario(usuario_id)
+    leccion_actual = obtener_leccion_actual_usuario(usuario_id)
+    
+    url_continuar = "/user-home"
+    if leccion_actual:
+        # Extraer el ID base (remover '-teoria' o '-practica' para armar la URL)
+        raw_id = leccion_actual["id"]
+        if raw_id.endswith("-teoria"):
+            base_id = raw_id[:-7]
+            url_continuar = f"/teoria?leccion={base_id}"
+        elif raw_id.endswith("-practica"):
+            base_id = raw_id[:-9]
+            url_continuar = f"/practica?leccion={base_id}"
+
+    return jsonify({
+        'ok': True, 
+        'bloques': bloques,
+        'url_continuar': url_continuar
+    })
 
 @app.route('/teoria')
 def vista_teoria():
@@ -178,8 +198,12 @@ def vista_practica():
     leccion = obtener_leccion(leccion_id)
     if leccion is None:
         return redirect('/user-home')
-    siguiente_leccion = obtener_siguiente_leccion_id(leccion_id)
-    return render_template('practica.html', leccion=leccion, siguiente_leccion=siguiente_leccion)
+    
+    # Si obtener_siguiente_leccion_id retorna None o vacío, enviamos /user-home
+    siguiente_id = obtener_siguiente_leccion_id(leccion_id)
+    siguiente_url = f"/practica?leccion={siguiente_id}" if siguiente_id else "/user-home"
+
+    return render_template('practica.html', leccion=leccion, siguiente_leccion=siguiente_url)
 
 
 @app.route('/api/practica/evaluar', methods=['POST'])

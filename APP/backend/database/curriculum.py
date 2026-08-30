@@ -7,7 +7,6 @@ la tabla 'letras' + 'progreso'. El Bloque 2 se muestra bloqueado con un aviso
 de "próximamente" hasta que se implemente su contenido (no hay todavía una
 tabla que represente saludos/frases).
 
-Colocar este archivo en: backend/database/curriculum.py
 """
 
 from backend.database.conexion import obtener_conexion
@@ -16,6 +15,13 @@ ALFABETO = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 # Umbral: cuántas veces_correctas necesita una letra para considerarse "dominada"
 UMBRAL_DOMINIO = 1
+
+# --- MODO DE PRUEBAS ---
+# En True: desbloquea TODAS las lecciones de los bloques implementados,
+# sin importar el progreso real, para poder probarlas libremente.
+# Ponlo en False cuando quieras que el desbloqueo real (secuencial) vuelva
+# a aplicar -- antes de que usuarios reales usen la app.
+FORZAR_DESBLOQUEO_TOTAL = True
 
 BLOQUES = [
     {
@@ -26,8 +32,8 @@ BLOQUES = [
             "La dactilología es el alfabeto manual de la Lengua de Señas Mexicana: "
             "cada letra del español tiene una forma de mano que la representa. Se usa "
             "sobre todo para deletrear nombres propios o palabras que todavía no tienen "
-            "una seña propia asignada. "
-            "\nRepasa cada letra con calma antes de practicar frente a la cámara."
+            "una seña propia asignada. Repasa cada letra con calma antes de practicar "
+            "frente a la cámara."
         ),
         "lecciones": [
             {"id": "A-E", "titulo": "A – E", "letras": ["A", "B", "C", "D", "E"]},
@@ -52,11 +58,15 @@ BLOQUES = [
 ]
 
 
+XP_POR_LETRA = 3
+
+
 def obtener_leccion(leccion_id):
     """
     Busca una lección por su id en cualquier bloque. Le anexa el texto
     introductorio del bloque (intro_bloque) SOLO si es la primera lección
-    de ese bloque, para que no se repita en cada lección. None si no existe.
+    de ese bloque, para que no se repita en cada lección, y el XP total
+    que se gana al completarla (xp_total). None si no existe.
     """
     for bloque in BLOQUES:
         for indice, leccion in enumerate(bloque["lecciones"]):
@@ -66,6 +76,7 @@ def obtener_leccion(leccion_id):
                 leccion_con_intro["intro_bloque"] = (
                     bloque.get("intro_teoria", "") if es_primera_leccion else ""
                 )
+                leccion_con_intro["xp_total"] = len(leccion["letras"]) * XP_POR_LETRA
                 return leccion_con_intro
     return None
 
@@ -139,12 +150,15 @@ def obtener_progreso_usuario(usuario_id):
         lecciones_resultado = []
         bloque_completo = True
         actual_asignado = False
-        desbloqueado = bloque_anterior_completo and bloque["implementado"]
+        desbloqueado = FORZAR_DESBLOQUEO_TOTAL or (bloque_anterior_completo and bloque["implementado"])
 
         for leccion in bloque["lecciones"]:
             if not bloque["implementado"] or not desbloqueado:
                 estado = "bloqueada"
                 bloque_completo = False
+            elif FORZAR_DESBLOQUEO_TOTAL:
+                # Modo pruebas: todas disponibles, sin calcular progreso real
+                estado = "actual"
             else:
                 completada = bool(leccion["letras"]) and all(
                     letra in dominadas for letra in leccion["letras"]
@@ -183,3 +197,24 @@ def obtener_progreso_usuario(usuario_id):
         bloque_anterior_completo = bloque_completo and bloque["implementado"]
 
     return resultado
+
+def obtener_leccion_actual_usuario(usuario_id):
+    """
+    Recorre el progreso del usuario y retorna el objeto de la primera lección 
+    cuyo estado sea 'actual', o la primera lección disponible como fallback.
+    """
+    bloques = obtener_progreso_usuario(usuario_id)
+    
+    # 1. Buscar la primera lección en estado 'actual'
+    for bloque in bloques:
+        if not bloque.get("desbloqueado"):
+            continue
+        for leccion in bloque.get("lecciones", []):
+            if leccion.get("estado") == "actual":
+                return leccion
+
+    # 2. Fallback: si no hay ninguna 'actual', retornar la primera del primer bloque
+    if bloques and bloques[0].get("lecciones"):
+        return bloques[0]["lecciones"][0]
+        
+    return None

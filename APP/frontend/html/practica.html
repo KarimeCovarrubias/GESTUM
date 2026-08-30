@@ -7,56 +7,104 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_practica.css') }}">
 </head>
 <body>
-    <header class="practica-topbar">
-        <a href="{{ url_for('vista_user_home') }}" class="icon-btn" aria-label="Salir de la lección">✕</a>
-        <div class="progreso-track">
-            <div id="progreso-fill" class="progreso-fill" style="width:0%"></div>
-        </div>
-        <div class="vidas" aria-label="Vidas restantes">
-            <span class="icon">❤️</span><span id="vidas-val">5</span>
-        </div>
-    </header>
 
-    <main class="practica-wrap">
-        <h1 id="leccion-titulo">{{ leccion.titulo }}</h1>
-        <p class="letra-actual">Muestra la letra: <strong id="letra-objetivo">?</strong></p>
+    <!-- Pantalla de inicio: se ve primero, la cámara no arranca hasta "Comenzar" -->
+    <div id="pantalla-inicio" class="gestum-overlay">
+        <div class="gestum-card">
+            <div class="gestum-badge-icon">🎯</div>
+            <h2 class="gestum-titulo-exito">{{ leccion.titulo }}</h2>
+            <p class="gestum-subtitulo-exito">Practica estas letras frente a la cámara.</p>
 
-        <div class="practica-grid">
-            <div class="referencia-box">
-                <div class="referencia-placeholder" id="referencia-placeholder"></div>
-                <img id="referencia-img" class="referencia-img" hidden alt="Referencia de la seña">
-            </div>
-
-            <div class="camara-box">
-                <video id="video" autoplay playsinline muted></video>
-                <canvas id="canvas" hidden></canvas>
-                <div id="camara-overlay" class="camara-overlay">Iniciando cámara…</div>
+            <div class="gestum-stats-grid">
+                <div class="gestum-stat-card">
+                    <span class="stat-label">GANARÁS</span>
+                    <span class="stat-val">⚡ +{{ leccion.xp_total }}</span>
+                </div>
+                <div class="gestum-stat-card">
+                    <span class="stat-label">LETRAS</span>
+                    <span class="stat-val">🔤 {{ leccion.letras|length }}</span>
+                </div>
             </div>
         </div>
 
-        <div id="pantalla-completa" class="completada" hidden>
-            <h2>¡Lección completada! 🎉</h2>
-            <a href="{{ url_for('vista_user_home') }}" class="btn-primary-glow">Volver al inicio</a>
+        <div class="gestum-footer-action">
+            <button id="btn-comenzar" class="btn-gestum-primary">COMENZAR</button>
         </div>
-    </main>
+    </div>
 
-    <!-- Barra fija inferior para el flujo de la lección -->
-    <footer id="feedback-bar" class="feedback-bar">
-        <div class="feedback-info" id="feedback-info">
-            <span id="feedback-icon" class="feedback-icon">➔</span>
-            <div>
-                <p id="feedback-titulo" class="feedback-titulo">¿Listo para avanzar?</p>
-                <p id="feedback-sub" class="feedback-sub">Realiza la seña o avanza manualmente.</p>
+    <!-- Contenido real de la práctica: oculto hasta darle "Comenzar" -->
+    <div id="practica-contenido" hidden>
+        <header class="practica-topbar">
+            <a href="{{ url_for('vista_user_home') }}" class="icon-btn" aria-label="Salir de la lección">✕</a>
+            <div class="progreso-track">
+                <div id="progreso-fill" class="progreso-fill" style="width:0%"></div>
+            </div>
+            <div class="vidas" aria-label="Vidas restantes">
+                <span class="icon">❤️</span><span id="vidas-val">5</span>
+            </div>
+        </header>
+
+        <main class="practica-wrap">
+            <h1 id="leccion-titulo">{{ leccion.titulo }}</h1>
+            <p class="letra-actual">Muestra la letra: <strong id="letra-objetivo">?</strong></p>
+
+            <div class="practica-grid">
+                <div class="referencia-box">
+                    <div class="referencia-placeholder" id="referencia-placeholder"></div>
+                    <img id="referencia-img" class="referencia-img" hidden alt="Referencia de la seña">
+                </div>
+
+                <div class="camara-box">
+                    <video id="video" autoplay playsinline muted></video>
+                    <canvas id="canvas" hidden></canvas>
+                    <div id="camara-overlay" class="camara-overlay">Iniciando cámara…</div>
+                </div>
+            </div>
+        </main>
+
+        <footer id="feedback-bar" class="feedback-bar">
+            <div class="feedback-info" id="feedback-info">
+                <span id="feedback-icon" class="feedback-icon">➔</span>
+                <div>
+                    <p id="feedback-titulo" class="feedback-titulo">¿Listo para avanzar?</p>
+                    <p id="feedback-sub" class="feedback-sub">Realiza la seña o avanza manualmente.</p>
+                </div>
+            </div>
+            <button id="btn-continuar" class="btn-continuar">Siguiente Letra</button>
+        </footer>
+    </div>
+
+    <!-- Overlay Final con la Línea Gráfica de Gestum -->
+    <div id="pantalla-completa" class="gestum-overlay" hidden>
+        <div class="gestum-card">
+            <div class="gestum-badge-icon">🎉</div>
+            <h2 class="gestum-titulo-exito">¡Lección completada!</h2>
+            <p class="gestum-subtitulo-exito">Has dominado los ejercicios de esta lección.</p>
+
+            <div class="gestum-stats-grid">
+                <div class="gestum-stat-card">
+                    <span class="stat-label">PUNTOS XP</span>
+                    <span class="stat-val">⚡ +{{ leccion.xp_total }}</span>
+                </div>
+                <div class="gestum-stat-card">
+                    <span class="stat-label">PRECISIÓN</span>
+                    <span class="stat-val">🎯 100%</span>
+                </div>
             </div>
         </div>
-        <button id="btn-continuar" class="btn-continuar">Siguiente Letra</button>
-    </footer>
+
+        <div class="gestum-footer-action">
+            <a href="{{ url_for('vista_user_home') }}" class="btn-gestum-secondary">INICIO</a>
+            <a href="{{ siguiente_leccion or url_for('vista_user_home') }}" class="btn-gestum-primary">CONTINUAR</a>
+        </div>
+    </div>
 
     <script>
         window.LECCION = {
             id: {{ leccion.id | tojson }},
             titulo: {{ leccion.titulo | tojson }},
-            letras: {{ leccion.letras | tojson }}
+            letras: {{ leccion.letras | tojson }},
+            siguienteUrl: {{ siguiente_leccion | tojson }}
         };
     </script>
     <script src="{{ url_for('static', filename='js/practica.js') }}"></script>
