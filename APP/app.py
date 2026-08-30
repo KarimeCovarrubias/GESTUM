@@ -2,14 +2,15 @@ import base64
 import numpy as np
 import cv2
 
-from backend.database.curriculum import sembrar_letras, obtener_progreso_usuario, obtener_leccion
+from backend.database.curriculum import (
+    sembrar_letras, obtener_progreso_usuario, obtener_leccion, obtener_siguiente_leccion_id
+)
 from backend.database.progreso import registrar_intento
 from backend.vision.evaluador import evaluar_frame
 
 from flask import Flask, request, jsonify, url_for, render_template, session, redirect
 from backend.database.conexion import inicializar_bd, obtener_conexion
 from backend.database.usuarios import crear_usuario, verificar_login
-from backend.database.curriculum import sembrar_letras, obtener_progreso_usuario
 
 app = Flask(
     __name__,
@@ -20,6 +21,7 @@ app.secret_key = '1234'
 
 # Inicializar las tablas de la BD al arrancar
 inicializar_bd()
+sembrar_letras()
 
 # --- RUTAS DE AUTENTICACIÓN (API) ---
 
@@ -71,7 +73,7 @@ def api_registro():
 @app.route('/api/login', methods=['POST'])
 def api_login():
     data = request.get_json() if request.is_json else request.form
-    
+
     nombre_usuario = (data.get('nombreUsuario') or '').strip()
     contrasena = data.get('contrasena') or ''
 
@@ -158,6 +160,16 @@ def api_progreso():
     bloques = obtener_progreso_usuario(session['usuario_id'])
     return jsonify({'ok': True, 'bloques': bloques})
 
+@app.route('/teoria')
+def vista_teoria():
+    if 'usuario_id' not in session:
+        return redirect('/login')
+    leccion_id = request.args.get('leccion', '')
+    leccion = obtener_leccion(leccion_id)
+    if leccion is None:
+        return redirect('/user-home')
+    return render_template('teoria.html', leccion=leccion)
+
 @app.route('/practica')
 def vista_practica():
     if 'usuario_id' not in session:
@@ -166,7 +178,8 @@ def vista_practica():
     leccion = obtener_leccion(leccion_id)
     if leccion is None:
         return redirect('/user-home')
-    return render_template('practica.html', leccion=leccion)
+    siguiente_leccion = obtener_siguiente_leccion_id(leccion_id)
+    return render_template('practica.html', leccion=leccion, siguiente_leccion=siguiente_leccion)
 
 
 @app.route('/api/practica/evaluar', methods=['POST'])

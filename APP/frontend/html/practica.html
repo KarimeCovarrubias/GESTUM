@@ -23,7 +23,7 @@
 
         <div class="practica-grid">
             <div class="referencia-box">
-                <div class="referencia-placeholder" id="referencia-placeholder"></div>      <!-- IMAGENES DE LAS SEÑAS -->
+                <div class="referencia-placeholder" id="referencia-placeholder"></div>
                 <img id="referencia-img" class="referencia-img" hidden alt="Referencia de la seña">
             </div>
 
@@ -40,16 +40,17 @@
         </div>
     </main>
 
-    <div id="feedback-bar" class="feedback-bar" hidden>
-        <div class="feedback-info">
-            <span id="feedback-icon" class="feedback-icon">✓</span>
+    <!-- Barra fija inferior para el flujo de la lección -->
+    <footer id="feedback-bar" class="feedback-bar">
+        <div class="feedback-info" id="feedback-info">
+            <span id="feedback-icon" class="feedback-icon">➔</span>
             <div>
-                <p id="feedback-titulo" class="feedback-titulo">¡Correcto!</p>
-                <p id="feedback-sub" class="feedback-sub"></p>
+                <p id="feedback-titulo" class="feedback-titulo">¿Listo para avanzar?</p>
+                <p id="feedback-sub" class="feedback-sub">Realiza la seña o avanza manualmente.</p>
             </div>
         </div>
-        <button id="btn-continuar" class="btn-continuar">Continuar</button>
-    </div>
+        <button id="btn-continuar" class="btn-continuar">Siguiente Letra</button>
+    </footer>
 
     <script>
         window.LECCION = {

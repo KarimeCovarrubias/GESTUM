@@ -22,6 +22,13 @@ BLOQUES = [
         "id": 1,
         "titulo": "Abecedario",
         "implementado": True,
+        "intro_teoria": (
+            "La dactilología es el alfabeto manual de la Lengua de Señas Mexicana: "
+            "cada letra del español tiene una forma de mano que la representa. Se usa "
+            "sobre todo para deletrear nombres propios o palabras que todavía no tienen "
+            "una seña propia asignada. "
+            "\nRepasa cada letra con calma antes de practicar frente a la cámara."
+        ),
         "lecciones": [
             {"id": "A-E", "titulo": "A – E", "letras": ["A", "B", "C", "D", "E"]},
             {"id": "F-J", "titulo": "F – J", "letras": ["F", "G", "H", "I", "J"]},
@@ -43,6 +50,47 @@ BLOQUES = [
         ],
     },
 ]
+
+
+def obtener_leccion(leccion_id):
+    """
+    Busca una lección por su id en cualquier bloque. Le anexa el texto
+    introductorio del bloque (intro_bloque) SOLO si es la primera lección
+    de ese bloque, para que no se repita en cada lección. None si no existe.
+    """
+    for bloque in BLOQUES:
+        for indice, leccion in enumerate(bloque["lecciones"]):
+            if leccion["id"] == leccion_id:
+                leccion_con_intro = dict(leccion)
+                es_primera_leccion = indice == 0
+                leccion_con_intro["intro_bloque"] = (
+                    bloque.get("intro_teoria", "") if es_primera_leccion else ""
+                )
+                return leccion_con_intro
+    return None
+
+
+def obtener_siguiente_leccion_id(leccion_id):
+    """
+    Devuelve el id de la siguiente lección implementada en la secuencia
+    (recorriendo todos los bloques implementados en orden), o None si
+    'leccion_id' es la última o no se encontró.
+    """
+    secuencia = []
+    for bloque in BLOQUES:
+        if not bloque["implementado"]:
+            continue
+        for leccion in bloque["lecciones"]:
+            secuencia.append(leccion["id"])
+
+    try:
+        indice = secuencia.index(leccion_id)
+    except ValueError:
+        return None
+
+    if indice + 1 < len(secuencia):
+        return secuencia[indice + 1]
+    return None
 
 
 def sembrar_letras():
@@ -112,15 +160,22 @@ def obtener_progreso_usuario(usuario_id):
                     bloque_completo = False
 
             lecciones_resultado.append({
-                "id": leccion["id"],
+                "id": f"{leccion['id']}-teoria",
                 "titulo": leccion["titulo"],
+                "tipo": "teoria",
+                "estado": estado,
+            })
+            lecciones_resultado.append({
+                "id": f"{leccion['id']}-practica",
+                "titulo": leccion["titulo"],
+                "tipo": "practica",
                 "estado": estado,
             })
 
         resultado.append({
             "id": bloque["id"],
             "titulo": bloque["titulo"],
-            "totalLecciones": len(bloque["lecciones"]),
+            "totalLecciones": len(lecciones_resultado),
             "desbloqueado": desbloqueado,
             "lecciones": lecciones_resultado,
         })
@@ -128,11 +183,3 @@ def obtener_progreso_usuario(usuario_id):
         bloque_anterior_completo = bloque_completo and bloque["implementado"]
 
     return resultado
-
-def obtener_leccion(leccion_id):
-    """Busca una lección por su id en cualquier bloque. None si no existe."""
-    for bloque in BLOQUES:
-        for leccion in bloque["lecciones"]:
-            if leccion["id"] == leccion_id:
-                return leccion
-    return None

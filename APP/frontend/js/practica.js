@@ -1,10 +1,10 @@
-const INTERVALO_MS = 900; // cada cuánto se manda un frame a evaluar mientras se busca la seña
+const INTERVALO_MS = 900;
 const VIDAS_INICIALES = 5;
 
 let indiceActual = 0;
 let vidas = VIDAS_INICIALES;
-let evaluando = false;   // evita mandar un frame mientras el anterior sigue en vuelo
-let pausado = false;     // se pausa mientras se muestra la barra de "¡Correcto!"
+let evaluando = false;
+let pausado = false;
 let intervaloId = null;
 
 const video = document.getElementById('video');
@@ -32,11 +32,10 @@ function actualizarProgresoUI() {
     progresoFill.style.width = total ? `${(indiceActual / total) * 100}%` : '0%';
     letraObjetivoEl.textContent = letraActual() || '';
     vidasValEl.textContent = vidas;
+    restablecerBarraInferior();
     actualizarReferencia();
 }
 
-// Muestra la imagen de referencia de la letra si existe en /static/imagenes/abecedario/<LETRA>.png,
-// o el placeholder si todavía no hay material para esa letra.
 function actualizarReferencia() {
     const letra = letraActual();
     if (!letra) return;
@@ -49,7 +48,6 @@ function actualizarReferencia() {
         referenciaPlaceholder.hidden = true;
     };
     probeImg.onerror = () => {
-        console.warn(`No se encontró la imagen para la letra: ${letra} en la ruta ${ruta}`)
         referenciaImg.hidden = true;
         referenciaPlaceholder.hidden = false;
     };
@@ -64,7 +62,7 @@ async function iniciarCamara() {
         intervaloId = setInterval(capturarYEvaluar, INTERVALO_MS);
     } catch (error) {
         console.error('No se pudo acceder a la cámara:', error);
-        camaraOverlay.textContent = 'No se pudo acceder a la cámara. Revisa los permisos del navegador.';
+        camaraOverlay.textContent = 'Sin acceso a la cámara. Permite los permisos en el navegador.';
     }
 }
 
@@ -73,14 +71,14 @@ function capturarFrameBase64() {
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
     ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1); // efecto espejo, más natural para el usuario
+    ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     return canvas.toDataURL('image/jpeg', 0.7);
 }
 
 async function capturarYEvaluar() {
     if (evaluando || pausado || !window.LECCION.letras.length) return;
-    if (!video.videoWidth) return; // la cámara todavía no tiene frames listos
+    if (!video.videoWidth) return;
 
     evaluando = true;
     const imagen = capturarFrameBase64();
@@ -104,7 +102,7 @@ async function capturarYEvaluar() {
 
 function procesarResultado(data) {
     if (!data.ok) {
-        camaraOverlay.textContent = 'Ocurrió un error evaluando la seña.';
+        camaraOverlay.textContent = 'Error al evaluar la seña.';
         return;
     }
 
@@ -114,7 +112,7 @@ function procesarResultado(data) {
     }
 
     if (!data.modelo_listo) {
-        camaraOverlay.textContent = 'El modelo todavía no está entrenado';
+        camaraOverlay.textContent = 'Modelo no disponible';
         return;
     }
 
@@ -128,24 +126,38 @@ function procesarResultado(data) {
 }
 
 function registrarFallo() {
-    // Cosmético por ahora: las vidas no se guardan en el backend todavía,
-    // solo bajan visualmente durante la sesión de práctica actual.
     vidas = Math.max(0, vidas - 1);
     vidasValEl.textContent = vidas;
 }
 
 function mostrarBarraExito() {
     pausado = true;
-
     feedbackBar.className = 'feedback-bar feedback-bar--ok';
     feedbackIcon.textContent = '✓';
-    feedbackTitulo.textContent = '¡Correcto!';
-    feedbackSub.textContent = `Dominaste la letra ${letraActual()}`;
-    feedbackBar.hidden = false;
+    feedbackTitulo.textContent = '¡Excelente!';
+    feedbackSub.textContent = `Lograste la letra ${letraActual()}`;
+    
+    // Si es la última letra, cambia el texto a "Siguiente Lección" o "Finalizar"
+    btnContinuar.textContent = (indiceActual === window.LECCION.letras.length - 1) ? 'Siguiente Lección' : 'Siguiente Letra';
+}
+
+function restablecerBarraInferior() {
+    feedbackBar.className = 'feedback-bar';
+    feedbackIcon.textContent = '➔';
+    
+    const letra = letraActual();
+    if (letra) {
+        feedbackTitulo.textContent = `Letra ${letra}`;
+        feedbackSub.textContent = 'Muestra la seña frente a la cámara';
+        btnContinuar.textContent = (indiceActual === window.LECCION.letras.length - 1) ? 'Siguiente Lección' : 'Siguiente Letra';
+    } else {
+        feedbackTitulo.textContent = '¡Lección completada!';
+        feedbackSub.textContent = 'Haz clic para finalizar';
+        btnContinuar.textContent = 'Siguiente Lección';
+    }
 }
 
 function avanzarSiguienteLetra() {
-    feedbackBar.hidden = true;
     indiceActual += 1;
     pausado = false;
 
@@ -163,6 +175,7 @@ function finalizarLeccion() {
     actualizarProgresoUI();
     document.querySelector('.practica-grid').hidden = true;
     document.querySelector('.letra-actual').hidden = true;
+    feedbackBar.hidden = true;
     pantallaCompleta.hidden = false;
 }
 
@@ -170,7 +183,7 @@ btnContinuar.addEventListener('click', avanzarSiguienteLetra);
 
 document.addEventListener('DOMContentLoaded', () => {
     if (!window.LECCION.letras || !window.LECCION.letras.length) {
-        camaraOverlay.textContent = 'Esta lección todavía no tiene letras configuradas.';
+        camaraOverlay.textContent = 'Sin letras configuradas.';
         return;
     }
     actualizarProgresoUI();

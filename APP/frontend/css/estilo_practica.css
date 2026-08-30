@@ -2,7 +2,7 @@
     --navy: #1B3A6B;
     --navy-soft: #5C7091;
     --teal: #1A8CA5;
-    --teal-light: #5FC1D6;
+    --teal-dark: #13697C;
     --gold: #E0A63E;
     --heart: #D9564A;
     --bg: #F5F8FA;
@@ -10,7 +10,6 @@
     --border: #E3E9EE;
     --ok: #1F9D55;
     --ok-bg: #E9F8EF;
-    --error: #D9564A;
 }
 
 *{ box-sizing: border-box; }
@@ -20,17 +19,16 @@ body{
     background: var(--bg);
     color: var(--navy);
     font-family: 'Inter', sans-serif;
-    padding-bottom: 100px; /* espacio para la barra inferior de retroalimentación */
+    padding-bottom: 90px;
 }
 
 h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
 
-/* ---------- Barra superior (estilo Duolingo) ---------- */
 .practica-topbar{
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 14px 18px;
+    padding: 12px 18px;
     background: var(--card);
     border-bottom: 1px solid var(--border);
     position: sticky;
@@ -71,26 +69,40 @@ h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
     white-space: nowrap;
 }
 
-/* ---------- Contenido ---------- */
 .practica-wrap{
-    max-width: 640px;
+    max-width: 680px;
     margin: 0 auto;
-    padding: 24px 16px 0;
+    padding: 12px 16px 0;
     text-align: center;
 }
 
-.practica-wrap h1{ font-size: 22px; margin-bottom: 6px; }
+.practica-wrap h1 {
+    font-size: 50px;
+    margin-bottom: 2px;
+}
 
-.letra-actual{ font-size: 15px; color: var(--navy-soft); margin-bottom: 18px; }
-.letra-actual strong{ color: var(--navy); font-size: 20px; }
+.practica-wrap p {
+    font-size: 25px;
+    margin-bottom: 25px;
+}
+
+.letra-actual {
+    font-size: 50px;
+    color: var(--navy-soft);
+    margin-bottom: 30px;
+}
+
+.letra-actual strong{
+    color: var(--navy);
+    font-size: 30px;
+}
 
 .practica-grid{
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
-    max-width: 480px;
-    margin: 0 auto;
+    gap: 28px;
+    width: 100%;
 }
 
 .referencia-box, .camara-box{
@@ -99,11 +111,12 @@ h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
     overflow: hidden;
     width: 100%;
     aspect-ratio: 4 / 3;
+    max-height: 420px;
 }
 
 .referencia-box{
     background: var(--card);
-    border: 1px dashed var(--border);
+    border: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -113,45 +126,45 @@ h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     color: var(--navy-soft);
     font-size: 13px;
     font-weight: 600;
-    text-align: center;
 }
-
-.referencia-placeholder .tile-icon{ font-size: 30px; }
 
 .referencia-img{ 
     width: 100%; 
     height: 100%; 
     object-fit: contain; 
     background: #ffffff; 
-    padding: 12px;
+    padding: 8px;
 }
 
 .camara-box{ background: #000; }
-
-#video{ width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+#video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+}
 
 .camara-overlay{
     position: absolute;
     left: 0; right: 0; bottom: 0;
-    padding: 10px 14px;
+    padding: 8px 12px;
     font-weight: 700;
-    font-size: 13.5px;
+    font-size: 13px;
     color: #fff;
-    background: rgba(27, 58, 107, 0.65);
+    background: rgba(27, 58, 107, 0.75);
     text-align: center;
 }
 
-/* ---------- Pantalla lección completada ---------- */
 .completada{
-    margin-top: 40px;
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 18px;
+    gap: 16px;
 }
 .completada[hidden]{ display: none; }
 
@@ -163,10 +176,10 @@ h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
     font-weight: 700;
     font-size: 14px;
     padding: 12px 26px;
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
-/* ---------- Barra inferior de retroalimentación (estilo Duolingo) ---------- */
+/* Barra inferior fija */
 .feedback-bar{
     position: fixed;
     left: 0; right: 0; bottom: 0;
@@ -175,19 +188,23 @@ h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 16px 20px;
+    padding: 12px 20px;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+}
+
+.feedback-bar.feedback-bar--ok {
     background: var(--ok-bg);
     border-top: 2px solid var(--ok);
 }
-.feedback-bar[hidden]{ display: none; }
 
 .feedback-info{ display: flex; align-items: center; gap: 12px; }
 
 .feedback-icon{
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background: var(--ok);
+    background: var(--navy-soft);
     color: #fff;
     display: grid;
     place-items: center;
@@ -195,24 +212,49 @@ h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
     flex-shrink: 0;
 }
 
-.feedback-titulo{ margin: 0; font-weight: 800; color: var(--ok); font-size: 15px; }
-.feedback-sub{ margin: 0; color: var(--navy-soft); font-size: 13px; }
+.feedback-bar--ok .feedback-icon {
+    background: var(--ok);
+}
+
+.feedback-titulo{ margin: 0; font-weight: 800; color: var(--navy); font-size: 14px; }
+.feedback-bar--ok .feedback-titulo { color: var(--ok); }
+.feedback-sub{ margin: 0; color: var(--navy-soft); font-size: 12.5px; }
 
 .btn-continuar{
-    background: var(--ok);
+    background: var(--teal);
     color: #fff;
     font-weight: 700;
     font-size: 14px;
-    padding: 12px 26px;
-    border-radius: 12px;
+    padding: 12px 22px;
+    border-radius: 10px;
     border: none;
     cursor: pointer;
     white-space: nowrap;
+    transition: background 0.2s ease;
 }
 
-/* ---------- Escritorio ---------- */
-@media (min-width: 720px){
-    .practica-grid{ grid-template-columns: 1fr; } /* Mantiene la disposición vertical en pantallas grandes */
-    .practica-wrap{ padding-top: 24px; }
-    .feedback-bar{ padding: 18px 40px; }
+.btn-continuar:hover {
+    background: var(--teal-dark);
+}
+
+.feedback-bar--ok .btn-continuar {
+    background: var(--ok);
+}
+
+/* Ajustes para pantallas de escritorio (cuando se pasa a 2 columnas) */
+@media (min-width: 850px){
+    .practica-wrap{
+        max-width: 1100px; /* Ancho máximo amplio para la vista en 2 columnas */
+    }
+
+    .practica-grid{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 36px; /* Espacio horizontal amplio entre la imagen y la cámara */
+        align-items: center;
+    }
+
+    .referencia-box, .camara-box{
+        max-height: 460px; /* Cajas más grandes en pantallas grandes */
+    }
 }
