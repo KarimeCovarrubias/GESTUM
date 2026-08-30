@@ -23,6 +23,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const avatarBtn = document.getElementById('user-avatar');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    if (avatarBtn && userDropdown) {
+        // Alternar el menú desplegable al hacer clic en el avatar
+        avatarBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isExpanded = avatarBtn.getAttribute('aria-expanded') === 'true';
+            avatarBtn.setAttribute('aria-expanded', !isExpanded);
+            userDropdown.classList.toggle('show');
+        });
+
+        // Cerrar el menú si se hace clic en cualquier otra parte de la pantalla
+        document.addEventListener('click', (e) => {
+            if (!userDropdown.contains(e.target) && e.target !== avatarBtn) {
+                userDropdown.classList.remove('show');
+                avatarBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+});
+
 function actualizarCabecera(usuario) {
     const tituloHero = document.getElementById('user-greeting');
     if (tituloHero) tituloHero.textContent = `¡Hola, ${usuario.nombre}!`;
