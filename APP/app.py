@@ -194,17 +194,17 @@ def vista_teoria():
 def vista_practica():
     if 'usuario_id' not in session:
         return redirect('/login')
+        
     leccion_id = request.args.get('leccion', '')
     leccion = obtener_leccion(leccion_id)
     if leccion is None:
         return redirect('/user-home')
-
-    # Si obtener_siguiente_leccion_id retorna None o vacío, enviamos /user-home
-    siguiente_id = obtener_siguiente_leccion_id(leccion_id)
-    siguiente_url = f"/practica?leccion={siguiente_id}" if siguiente_id else "/user-home"
+    
+    # Se pasa el id completo del paso de práctica actual para encontrar el siguiente enlace
+    paso_actual_id = f"{leccion_id}-practica"
+    siguiente_url = obtener_siguiente_leccion_id(paso_actual_id) or "/user-home"
 
     return render_template('practica.html', leccion=leccion, siguiente_leccion=siguiente_url)
-
 
 @app.route('/api/practica/evaluar', methods=['POST'])
 def api_practica_evaluar():

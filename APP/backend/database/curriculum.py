@@ -81,28 +81,31 @@ def obtener_leccion(leccion_id):
     return None
 
 
-def obtener_siguiente_leccion_id(leccion_id):
+def obtener_siguiente_leccion_id(leccion_id_actual):
     """
-    Devuelve el id de la siguiente lección implementada en la secuencia
-    (recorriendo todos los bloques implementados en orden), o None si
-    'leccion_id' es la última o no se encontró.
+    Devuelve la URL completa del siguiente paso en la secuencia
+    (Teoría A-E -> Práctica A-E -> Teoría F-J -> Práctica F-J -> ...),
+    o None si ya es el último paso.
     """
-    secuencia = []
+    pasos_secuencia = []
+    
     for bloque in BLOQUES:
-        if not bloque["implementado"]:
+        if not bloque.get("implementado"):
             continue
-        for leccion in bloque["lecciones"]:
-            secuencia.append(leccion["id"])
+        for leccion in bloque.get("lecciones", []):
+            base_id = leccion["id"]
+            # Cada lección tiene un paso de teoría y luego uno de práctica
+            pasos_secuencia.append({"id": f"{base_id}-teoria", "url": f"/teoria?leccion={base_id}"})
+            pasos_secuencia.append({"id": f"{base_id}-practica", "url": f"/practica?leccion={base_id}"})
 
-    try:
-        indice = secuencia.index(leccion_id)
-    except ValueError:
-        return None
+    # Encontrar la posición actual
+    for i, paso in enumerate(pasos_secuencia):
+        if paso["id"] == leccion_id_actual or paso["id"] == f"{leccion_id_actual}-practica":
+            if i + 1 < len(pasos_secuencia):
+                return pasos_secuencia[i + 1]["url"]
+            break
 
-    if indice + 1 < len(secuencia):
-        return secuencia[indice + 1]
     return None
-
 
 def sembrar_letras():
     """
