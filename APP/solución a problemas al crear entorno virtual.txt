@@ -28,6 +28,12 @@ py -3.12 -m venv venv
 .\venv\Scripts\Activate.ps1
 python --version
 
+SI NO DEJA ABRIR EL ENTORNO VIRTUAL:
+Ejecuta estas 2 líneas seguidas en tu terminal actual:
+    Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process -Force
+    .\venv\Scripts\Activate.ps1
+
+
 ---- INSTALAR LOS requirements.txt ----
 
-pip install requirements.txt
+pip install -r requirements.txt
