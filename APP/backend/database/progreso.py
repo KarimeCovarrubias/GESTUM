@@ -139,3 +139,31 @@ def obtener_historial_intentos(usuario_id, letra=None, limite=50):
     filas = cursor.fetchall()
     conexion.close()
     return [dict(fila) for fila in filas]
+
+def registrar_prueba_aprobada(usuario_id, leccion_id):
+    """
+    Marca que el usuario aprobó la prueba (deletrear palabras) de una
+    lección específica. No duplica si ya estaba registrada.
+    """
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+    cursor.execute("""
+        INSERT INTO pruebas_aprobadas (usuario_id, leccion_id)
+        VALUES (?, ?)
+        ON CONFLICT (usuario_id, leccion_id) DO NOTHING
+    """, (usuario_id, leccion_id))
+    conexion.commit()
+    conexion.close()
+
+
+def obtener_pruebas_aprobadas(usuario_id):
+    """Devuelve el conjunto de ids de lección cuya prueba ya aprobó el usuario."""
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+    cursor.execute(
+        "SELECT leccion_id FROM pruebas_aprobadas WHERE usuario_id = ?",
+        (usuario_id,)
+    )
+    filas = cursor.fetchall()
+    conexion.close()
+    return {fila["leccion_id"] for fila in filas}

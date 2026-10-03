@@ -21,12 +21,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         actualizarCabecera(usuario);
         renderizarInicio(progreso.bloques);
 
-        // Asignar dinámicamente el destino del botón "Continuar lección"
-        const btnContinuar = document.getElementById('btn-continuar-leccion');
-        if (btnContinuar && progreso.url_continuar) {
-            btnContinuar.href = progreso.url_continuar;
-        }
-
     } catch (error) {
         console.error('Error cargando los datos del usuario:', error);
     }
@@ -50,18 +44,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function actualizarCabecera(usuario) {
+    // Nombre de usuario obtenido de la API
     const username = usuario.nombreUsuario || usuario.username || usuario.nombre_usuario || usuario.nombre || 'Usuario';
     const usernameConArroba = `@${username}`;
 
+    // Saludo del Hero (ejemplo: ¡Hola, @Diva!)
     const tituloHero = document.getElementById('user-greeting');
     if (tituloHero) tituloHero.textContent = `¡Hola, ${usernameConArroba}!`;
 
+    // Texto en el menú desplegable del avatar (@Diva)
     const dropdownUsername = document.getElementById('dropdown-username');
     if (dropdownUsername) dropdownUsername.textContent = usernameConArroba;
 
+    // Inicial en la burbuja del avatar (mantiene la primera letra sin el '@')
     const avatar = document.getElementById('user-avatar');
     if (avatar) avatar.textContent = username.charAt(0).toUpperCase();
 
+    // Racha y XP
     const rachaEl = document.getElementById('racha-val');
     if (rachaEl) rachaEl.textContent = usuario.racha || 0;
 
@@ -78,7 +77,7 @@ function renderizarInicio(bloques) {
     const heroSub = document.getElementById('hero-sub');
     if (heroSub && bloqueActivo) {
         const completadas = bloqueActivo.lecciones.filter(l => l.estado === 'completada').length;
-        heroSub.textContent = `Llevas ${completadas} de ${bloqueActivo.totalLecciones} lecciones en ${bloqueActivo.titulo}. Sigue practicando para no perder tu racha.`;
+        heroSub.textContent = `Vas ${completadas} de ${bloqueActivo.totalLecciones} pasos en ${bloqueActivo.titulo}. Sigue practicando para no perder tu racha.`;
     }
 
     bloques.forEach(bloque => {
@@ -113,7 +112,8 @@ function renderizarInicio(bloques) {
         htmlBloque += `<div class="tile-grid">`;
 
         bloque.lecciones.forEach(leccion => {
-            const etiquetaTipo = leccion.tipo === 'teoria' ? 'Teoría' : 'Práctica';
+            const etiquetasTipo = { teoria: 'Teoría', practica: 'Práctica', prueba: 'Prueba' };
+            const etiquetaTipo = etiquetasTipo[leccion.tipo] || leccion.tipo;
             let claseTile = "is-locked";
             let contenidoTile = `<span class="tile-icon">🔒</span><span class="tile-tipo">${etiquetaTipo}</span><span class="tile-rango">${leccion.titulo}</span>`;
             let disabledAttr = "disabled";
@@ -148,5 +148,8 @@ function iniciarLeccion(idTile) {
     } else if (idTile.endsWith('-practica')) {
         const idLeccion = idTile.replace(/-practica$/, '');
         window.location.href = `/practica?leccion=${idLeccion}`;
+    } else if (idTile.endsWith('-prueba')) {
+        const idLeccion = idTile.replace(/-prueba$/, '');
+        window.location.href = `/prueba?leccion=${idLeccion}`;
     }
 }

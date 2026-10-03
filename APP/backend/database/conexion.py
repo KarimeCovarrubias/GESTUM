@@ -90,6 +90,19 @@ def inicializar_bd():
         )
     """)
 
+    # Registro de qué "prueba" (deletrear palabras) ya aprobó cada usuario,
+    # por lección -- es lo que desbloquea el siguiente rango de letras.
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS pruebas_aprobadas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER NOT NULL,
+            leccion_id TEXT NOT NULL,
+            fecha_hora TEXT NOT NULL DEFAULT (datetime('now')),
+            FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE CASCADE,
+            UNIQUE (usuario_id, leccion_id)
+        )
+    """)
+
     conexion.commit()
     conexion.close()
 

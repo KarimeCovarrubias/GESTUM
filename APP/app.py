@@ -6,7 +6,7 @@ from backend.database.curriculum import (
     sembrar_letras, obtener_progreso_usuario, obtener_leccion,
     obtener_siguiente_leccion_id, obtener_leccion_actual_usuario, XP_POR_LETRA
 )
-from backend.database.progreso import registrar_intento
+from backend.database.progreso import registrar_intento, registrar_prueba_aprobada
 from backend.vision.evaluador import evaluar_frame
 
 from flask import Flask, request, jsonify, url_for, render_template, session, redirect
@@ -165,7 +165,7 @@ def api_progreso():
 
     url_continuar = "/user-home"
     if leccion_actual:
-        # Extraer el ID base (remover '-teoria' o '-practica' para armar la URL)
+        # Extraer el ID base (remover '-teoria', '-practica' o '-prueba' para armar la URL)
         raw_id = leccion_actual["id"]
         if raw_id.endswith("-teoria"):
             base_id = raw_id[:-7]
@@ -173,6 +173,9 @@ def api_progreso():
         elif raw_id.endswith("-practica"):
             base_id = raw_id[:-9]
             url_continuar = f"/practica?leccion={base_id}"
+        elif raw_id.endswith("-prueba"):
+            base_id = raw_id[:-7]
+            url_continuar = f"/prueba?leccion={base_id}"
 
     return jsonify({
         'ok': True,
@@ -194,17 +197,48 @@ def vista_teoria():
 def vista_practica():
     if 'usuario_id' not in session:
         return redirect('/login')
-        
+
     leccion_id = request.args.get('leccion', '')
     leccion = obtener_leccion(leccion_id)
     if leccion is None:
         return redirect('/user-home')
-    
-    # Se pasa el id completo del paso de práctica actual para encontrar el siguiente enlace
-    paso_actual_id = f"{leccion_id}-practica"
-    siguiente_url = obtener_siguiente_leccion_id(paso_actual_id) or "/user-home"
+
+    # Al terminar la Práctica, lo siguiente es la Prueba de ESTA MISMA lección
+    # (no la siguiente lección todavía -- eso solo pasa al aprobar la prueba).
+    siguiente_url = f"/prueba?leccion={leccion_id}"
 
     return render_template('practica.html', leccion=leccion, siguiente_leccion=siguiente_url)
+
+
+@app.route('/prueba')
+def vista_prueba():
+    if 'usuario_id' not in session:
+        return redirect('/login')
+    leccion_id = request.args.get('leccion', '')
+    leccion = obtener_leccion(leccion_id)
+    if leccion is None:
+        return redirect('/user-home')
+
+    siguiente_id = obtener_siguiente_leccion_id(leccion_id)
+    siguiente_url = f"/teoria?leccion={siguiente_id}" if siguiente_id else "/user-home"
+
+    return render_template('prueba.html', leccion=leccion, siguiente_leccion=siguiente_url)
+
+
+@app.route('/api/prueba/aprobar', methods=['POST'])
+def api_prueba_aprobar():
+    if 'usuario_id' not in session:
+        return jsonify({'ok': False}), 401
+
+    data = request.get_json()
+    leccion_id = (data.get('leccion_id') or '').strip()
+
+    if not leccion_id:
+        return jsonify({'ok': False, 'mensaje': 'Falta leccion_id.'}), 400
+
+    registrar_prueba_aprobada(session['usuario_id'], leccion_id)
+    return jsonify({'ok': True})
+
 
 @app.route('/api/practica/evaluar', methods=['POST'])
 def api_practica_evaluar():
