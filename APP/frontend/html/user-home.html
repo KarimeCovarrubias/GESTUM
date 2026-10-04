@@ -9,7 +9,7 @@
 
 <body>
     <div class="app-shell">
-        <!-- Barra lateral: solo visible en escritorio (ver CSS) -->
+        <!-- Barra lateral: solo visible en escritorio -->
         <aside class="sidebar">
             <img class="logo" src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Gestum">
             <nav class="sidebar-nav">
@@ -18,6 +18,14 @@
                 <div class="nav-item"><span class="icon">🏆</span>Ranking</div>
                 <div class="nav-item"><span class="icon">👤</span>Perfil</div>
             </nav>
+            
+            <!-- Botón de Cerrar Sesión en la barra lateral -->
+            <div class="sidebar-footer">
+                <a href="/api/logout" class="nav-item nav-item--logout">
+                    <img src="{{ url_for('static', filename='imagenes/cerrar-sesion.png') }}" alt="Cerrar sesión" class="icon-img">
+                    Cerrar sesión
+                </a>
+            </div>
         </aside>
 
         <div class="main-column">
@@ -27,7 +35,20 @@
                     <div class="stat stat--racha" aria-label="Racha de práctica"><span class="icon">🔥</span><span id="racha-val">0</span></div>
                     <div class="stat stat--estrellas" aria-label="Estrellas acumuladas"><span class="icon">⭐</span><span id="xp-val">0</span></div>
                 </div>
-                <div class="avatar" id="user-avatar">?</div>
+                
+                <!-- Menú desplegable en el Avatar -->
+                <div class="user-menu-wrapper">
+                    <button class="avatar" id="user-avatar" type="button" aria-haspopup="true" aria-expanded="false">?</button>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <div class="dropdown-header">
+                            <span id="dropdown-username">Usuario</span>
+                        </div>
+                        <a href="/api/logout" class="dropdown-item dropdown-item--logout">
+                            <img src="{{ url_for('static', filename='imagenes/cerrar-sesion.png') }}" alt="Cerrar sesión" class="icon-img">
+                            Cerrar sesión
+                        </a>
+                    </div>
+                </div>
             </header>
 
             <section class="hero">
@@ -35,7 +56,8 @@
                     <p class="eyebrow">Buenas tardes</p>
                     <h1 id="user-greeting">¡Hola!</h1>
                     <p class="sub" id="hero-sub">Cargando tu progreso…</p>
-                    <span class="cta">Continuar lección</span>
+                    <!-- Cambiado a enlace <a> con id="btn-continuar-leccion" -->
+                    <a href="#" class="cta" id="btn-continuar-leccion">Continuar lección</a>
                 </div>
             </section>
 
@@ -43,7 +65,7 @@
         </div>
     </div>
 
-    <!-- Nav inferior: solo visible en móvil (ver CSS) -->
+    <!-- Nav inferior: solo visible en móvil -->
     <nav class="bottom-nav">
         <div class="nav-item active"><span class="icon">🏠</span>Inicio</div>
         <div class="nav-item"><span class="icon">📚</span>Lecciones</div>
