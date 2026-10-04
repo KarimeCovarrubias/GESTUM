@@ -22,7 +22,7 @@
                 </div>
                 <div class="gestum-stat-card">
                     <span class="stat-label">GANARÁS</span>
-                    <span class="stat-val">⚡ +{{ leccion.xp_total }}</span>
+                    <span class="stat-val">⚡ +{{ leccion.xp_prueba }}</span>
                 </div>
             </div>
         </div>
@@ -38,9 +38,6 @@
             <a href="{{ url_for('vista_user_home') }}" class="icon-btn" aria-label="Salir de la prueba">✕</a>
             <div class="progreso-track">
                 <div id="progreso-fill" class="progreso-fill" style="width:0%"></div>
-            </div>
-            <div class="vidas" aria-label="Vidas restantes">
-                <span class="icon">❤️</span><span id="vidas-val">5</span>
             </div>
         </header>
 
@@ -88,7 +85,7 @@
             <div class="gestum-stats-grid">
                 <div class="gestum-stat-card">
                     <span class="stat-label">PUNTOS XP</span>
-                    <span class="stat-val">⚡ +{{ leccion.xp_total }}</span>
+                    <span class="stat-val">⚡ +{{ leccion.xp_prueba }}</span>
                 </div>
                 <div class="gestum-stat-card">
                     <span class="stat-label">PALABRAS</span>

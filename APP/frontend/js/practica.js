@@ -1,8 +1,6 @@
 const INTERVALO_MS = 900;
-const VIDAS_INICIALES = 5;
 
 let indiceActual = 0;
-let vidas = VIDAS_INICIALES;
 let evaluando = false;
 let pausado = false;
 let intervaloId = null;
@@ -12,7 +10,6 @@ const canvas = document.getElementById('canvas');
 const camaraOverlay = document.getElementById('camara-overlay');
 const letraObjetivoEl = document.getElementById('letra-objetivo');
 const progresoFill = document.getElementById('progreso-fill');
-const vidasValEl = document.getElementById('vidas-val');
 const pantallaCompleta = document.getElementById('pantalla-completa');
 const referenciaPlaceholder = document.getElementById('referencia-placeholder');
 const referenciaImg = document.getElementById('referencia-img');
@@ -31,7 +28,6 @@ function actualizarProgresoUI() {
     const total = window.LECCION.letras.length;
     progresoFill.style.width = total ? `${(indiceActual / total) * 100}%` : '0%';
     letraObjetivoEl.textContent = letraActual() || '';
-    vidasValEl.textContent = vidas;
     restablecerBarraInferior();
     actualizarReferencia();
 }
@@ -121,13 +117,7 @@ function procesarResultado(data) {
         mostrarBarraExito();
     } else {
         camaraOverlay.textContent = `Detecté: ${data.prediccion}`;
-        registrarFallo();
     }
-}
-
-function registrarFallo() {
-    vidas = Math.max(0, vidas - 1);
-    vidasValEl.textContent = vidas;
 }
 
 function mostrarBarraExito() {

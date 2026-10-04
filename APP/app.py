@@ -4,7 +4,7 @@ import cv2
 
 from backend.database.curriculum import (
     sembrar_letras, obtener_progreso_usuario, obtener_leccion,
-    obtener_siguiente_leccion_id, obtener_leccion_actual_usuario, XP_POR_LETRA
+    obtener_siguiente_leccion_id, obtener_leccion_actual_usuario, XP_POR_LETRA, XP_BONO_PRUEBA
 )
 from backend.database.progreso import registrar_intento, registrar_prueba_aprobada
 from backend.vision.evaluador import evaluar_frame
@@ -237,6 +237,7 @@ def api_prueba_aprobar():
         return jsonify({'ok': False, 'mensaje': 'Falta leccion_id.'}), 400
 
     registrar_prueba_aprobada(session['usuario_id'], leccion_id)
+    actualizar_racha_y_xp(session['usuario_id'], xp_ganado=XP_BONO_PRUEBA)
     return jsonify({'ok': True})
 
 

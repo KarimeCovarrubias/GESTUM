@@ -4,13 +4,9 @@
 // última palabra, marca la prueba como aprobada en el backend.
 
 const INTERVALO_MS = 900;
-const VIDAS_INICIALES = 5;
-const FALLOS_CONSECUTIVOS_PARA_RESTAR_VIDA = 4;
 
 let indicePalabra = 0;
 let indiceLetraEnPalabra = 0;
-let vidas = VIDAS_INICIALES;
-let fallosConsecutivos = 0;
 let evaluando = false;
 let pausado = false;
 let intervaloId = null;
@@ -22,7 +18,6 @@ const letraObjetivoEl = document.getElementById('letra-objetivo');
 const palabraLetrasEl = document.getElementById('palabra-letras');
 const palabraContadorEl = document.getElementById('palabra-contador');
 const progresoFill = document.getElementById('progreso-fill');
-const vidasValEl = document.getElementById('vidas-val');
 const referenciaPlaceholder = document.getElementById('referencia-placeholder');
 const referenciaImg = document.getElementById('referencia-img');
 
@@ -66,7 +61,6 @@ function actualizarProgresoUI() {
     }
 
     letraObjetivoEl.textContent = letraActual() || '';
-    vidasValEl.textContent = vidas;
     restablecerBarraInferior();
     actualizarReferencia();
 }
@@ -156,21 +150,9 @@ function procesarResultado(data) {
 
     if (data.correcto) {
         camaraOverlay.textContent = '¡Correcto! ✓';
-        fallosConsecutivos = 0;
         mostrarBarraExito();
     } else {
         camaraOverlay.textContent = `Detecté: ${data.prediccion}`;
-        registrarFallo();
-    }
-}
-
-function registrarFallo() {
-    // Tolera reacomodar la mano: solo resta vida tras varios fallos seguidos.
-    fallosConsecutivos += 1;
-    if (fallosConsecutivos >= FALLOS_CONSECUTIVOS_PARA_RESTAR_VIDA) {
-        fallosConsecutivos = 0;
-        vidas = Math.max(0, vidas - 1);
-        vidasValEl.textContent = vidas;
     }
 }
 
@@ -196,8 +178,6 @@ function restablecerBarraInferior() {
 }
 
 function avanzarSiguienteLetra() {
-    fallosConsecutivos = 0;
-
     const palabra = palabraActual();
     if (indiceLetraEnPalabra < palabra.length - 1) {
         indiceLetraEnPalabra += 1;

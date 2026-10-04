@@ -13,7 +13,6 @@ Por ahora solo el Bloque 1 (Abecedario) tiene contenido real. El Bloque 2
 se muestra bloqueado con un aviso de "próximamente" hasta que se
 implemente su contenido.
 
-Colocar este archivo en: backend/database/curriculum.py
 """
 
 from backend.database.conexion import obtener_conexion
@@ -25,6 +24,7 @@ ALFABETO = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 UMBRAL_DOMINIO = 1
 
 XP_POR_LETRA = 3
+XP_BONO_PRUEBA = 20  # XP extra, además del XP por letra, solo por aprobar la prueba completa
 
 # --- MODO DE PRUEBAS ---
 # En True: desbloquea TODAS las lecciones de los bloques implementados,
@@ -108,6 +108,10 @@ def obtener_leccion(leccion_id):
                     bloque.get("intro_teoria", "") if es_primera_leccion else ""
                 )
                 leccion_con_intro["xp_total"] = len(leccion["letras"]) * XP_POR_LETRA
+
+                letras_en_palabras = sum(len(palabra) for palabra in leccion["palabras_prueba"])
+                leccion_con_intro["xp_prueba"] = letras_en_palabras * XP_POR_LETRA + XP_BONO_PRUEBA
+
                 return leccion_con_intro
     return None
 

@@ -39,9 +39,6 @@
             <div class="progreso-track">
                 <div id="progreso-fill" class="progreso-fill" style="width:0%"></div>
             </div>
-            <div class="vidas" aria-label="Vidas restantes">
-                <span class="icon">❤️</span><span id="vidas-val">5</span>
-            </div>
         </header>
 
         <main class="practica-wrap">
@@ -94,7 +91,6 @@
         </div>
 
         <div class="gestum-footer-action">
-            <a href="{{ url_for('vista_user_home') }}" class="btn-gestum-secondary">INICIO</a>
             <a href="{{ siguiente_leccion or url_for('vista_user_home') }}" class="btn-gestum-primary">CONTINUAR</a>
         </div>
     </div>
