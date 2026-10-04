@@ -12,13 +12,14 @@ solo a su propio rango.
 Por ahora solo el Bloque 1 (Abecedario) tiene contenido real. El Bloque 2
 se muestra bloqueado con un aviso de "próximamente" hasta que se
 implemente su contenido.
-
 """
 
 from backend.database.conexion import obtener_conexion
 from backend.database.progreso import obtener_pruebas_aprobadas
 
-ALFABETO = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+# Alfabeto completo de 28 letras (incluye Ll y Ñ, como en el abecedario LSM real)
+ALFABETO = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "LL",
+            "M", "N", "Ñ", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
 # Umbral: cuántas veces_correctas necesita una letra para considerarse "dominada"
 UMBRAL_DOMINIO = 1

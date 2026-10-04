@@ -58,3 +58,37 @@ def extraer_landmarks_de_frame(detector, frame_rgb):
     landmarks_crudos = resultado.multi_hand_landmarks[0]
     valores_normalizados = normalizar_landmarks(landmarks_crudos.landmark)
     return valores_normalizados, landmarks_crudos
+
+def extraer_estadisticas_secuencia(secuencia):
+    """
+    Resume una secuencia de N frames (letras CON MOVIMIENTO: J, K, Ll, Ñ, Q,
+    X, Z) en UN solo vector de tamaño fijo, para poder clasificarla con un
+    RandomForestClassifier normal en vez de necesitar una red neuronal
+    recurrente.
+
+    Por cada una de las 63 columnas (21 puntos x,y,z) calcula: media,
+    desviación estándar, mínimo, máximo, rango y pendiente lineal a lo
+    largo del tiempo -- la pendiente es justo lo que captura "hacia dónde
+    se movió" cada punto durante la seña.
+
+    secuencia: lista de listas, cada una con 63 valores (un frame).
+    Devuelve: lista de 63 * 6 = 378 valores.
+    """
+    import numpy as np
+
+    matriz = np.array(secuencia)  # forma: (n_frames, 63)
+
+    media = matriz.mean(axis=0)
+    desviacion = matriz.std(axis=0)
+    minimo = matriz.min(axis=0)
+    maximo = matriz.max(axis=0)
+    rango = maximo - minimo
+
+    tiempos = np.arange(matriz.shape[0])
+    pendiente = np.array([
+        np.polyfit(tiempos, matriz[:, columna], 1)[0]
+        for columna in range(matriz.shape[1])
+    ])
+
+    estadisticas = np.concatenate([media, desviacion, minimo, maximo, rango, pendiente])
+    return estadisticas.tolist()

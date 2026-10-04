@@ -265,9 +265,18 @@ def api_practica_evaluar():
     if imagen_bgr is None:
         return jsonify({'ok': False, 'mensaje': 'Imagen inválida.'}), 400
 
-    resultado = evaluar_frame(imagen_bgr, letra_objetivo)
+    resultado = evaluar_frame(imagen_bgr, letra_objetivo, clave_sesion=str(session['usuario_id']))
 
-    if resultado['mano_detectada'] and resultado['modelo_listo']:
+    # Mientras una letra dinámica sigue "recolectando" frames no hay
+    # predicción todavía -- no cuenta como intento ni correcto ni incorrecto.
+    hay_prediccion = (
+        resultado['mano_detectada']
+        and resultado['modelo_listo']
+        and not resultado.get('recolectando', False)
+        and resultado['prediccion'] is not None
+    )
+
+    if hay_prediccion:
         resultado_texto = 'correcto' if resultado['correcto'] else 'incorrecto'
         registrar_intento(session['usuario_id'], letra_objetivo, resultado_texto)
 
