@@ -19,7 +19,7 @@ Controles: ESPACIO = grabar (cuenta de 2 s y 2 s de grabación) | q = salir
 
 import glob
 import os
-import sys
+import  
 import time
 
 import cv2
