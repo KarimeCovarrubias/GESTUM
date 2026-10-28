@@ -24,13 +24,13 @@ import config
 
 def cargar_dataset():
     """Lee el CSV de landmarks y separa features (X) de etiquetas (y)."""
-    if not os.path.exists(config.RUTA_DATASET):
+    if not os.path.exists("../datos/letras.csv"):
         raise FileNotFoundError(
-            f"No se encontró el dataset en {config.RUTA_DATASET}. "
+            f"No se encontró el dataset en {"../datos/letras.csv"}. "
             "Corre primero modelo/recolectar_datos.py para generarlo."
         )
 
-    datos = pd.read_csv(config.RUTA_DATASET)
+    datos = pd.read_csv("../datos/letras.csv")
 
     if datos.empty:
         raise ValueError("El dataset está vacío. Graba al menos una ráfaga por letra.")
