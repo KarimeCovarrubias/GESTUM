@@ -4,7 +4,7 @@ Basado en el capturar_mov.py de tus compañeros, con tres cambios:
   - Guarda en modelo/letrasmov/<LETRA>/ sin importar desde dónde lo ejecutes.
   - Usa landmarks.py (no necesita utils_mov.py).
   - La vista previa se ve en espejo (más natural); lo que se GUARDA va sin
-    espejo, igual que el resto del dataset.
+    espejo, igual que el resto del dataset.-
 
 Los archivos quedan numerados por letra:
     modelo/letrasmov/K/K01.npy, K02.npy, K03.npy ...
