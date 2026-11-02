@@ -7,7 +7,7 @@ from backend.database.curriculum import (
     obtener_siguiente_leccion_id, obtener_leccion_actual_usuario, XP_POR_LETRA, XP_BONO_PRUEBA
 )
 from backend.database.progreso import registrar_intento, registrar_prueba_aprobada
-from backend.vision.evaluador import evaluar_frame
+from backend.vision.evaluador import evaluar_frame, evaluar_secuencia
 
 from flask import Flask, request, jsonify, url_for, render_template, session, redirect
 from backend.database.conexion import inicializar_bd, obtener_conexion
@@ -266,23 +266,61 @@ def api_practica_evaluar():
         return jsonify({'ok': False, 'mensaje': 'Imagen inválida.'}), 400
 
     resultado = evaluar_frame(imagen_bgr, letra_objetivo, clave_sesion=str(session['usuario_id']))
+    _registrar_resultado(resultado, letra_objetivo)
+    return jsonify({'ok': True, **resultado})
 
-    # Mientras una letra dinámica sigue "recolectando" frames no hay
-    # predicción todavía -- no cuenta como intento ni correcto ni incorrecto.
+
+def _registrar_resultado(resultado, letra_objetivo):
+    """Guarda el intento (y da XP si acertó) cuando hubo una predicción real."""
     hay_prediccion = (
         resultado['mano_detectada']
         and resultado['modelo_listo']
-        and not resultado.get('recolectando', False)
-        and resultado['prediccion'] is not None
+        and resultado.get('prediccion') is not None
     )
+    if not hay_prediccion:
+        return
 
-    if hay_prediccion:
-        resultado_texto = 'correcto' if resultado['correcto'] else 'incorrecto'
-        registrar_intento(session['usuario_id'], letra_objetivo, resultado_texto)
+    resultado_texto = 'correcto' if resultado['correcto'] else 'incorrecto'
+    registrar_intento(session['usuario_id'], letra_objetivo, resultado_texto)
+    if resultado_texto == 'correcto':
+        actualizar_racha_y_xp(session['usuario_id'], xp_ganado=XP_POR_LETRA)
 
-        if resultado_texto == 'correcto':
-            actualizar_racha_y_xp(session['usuario_id'], xp_ganado=XP_POR_LETRA)
 
+MAX_FRAMES_CLIP = 80
+
+
+@app.route('/api/practica/evaluar-secuencia', methods=['POST'])
+def api_practica_evaluar_secuencia():
+    """Letras con movimiento: el navegador graba ~2 s y manda todos los frames juntos."""
+    if 'usuario_id' not in session:
+        return jsonify({'ok': False}), 401
+
+    data = request.get_json(silent=True) or {}
+    letra_objetivo = (data.get('letra') or '').strip().upper()
+    frames_b64 = data.get('frames') or []
+
+    if not letra_objetivo or not isinstance(frames_b64, list) or not frames_b64:
+        return jsonify({'ok': False, 'mensaje': 'Faltan datos.'}), 400
+    if len(frames_b64) > MAX_FRAMES_CLIP:
+        return jsonify({'ok': False, 'mensaje': 'Clip demasiado largo.'}), 400
+
+    frames_bgr = []
+    try:
+        for imagen_b64 in frames_b64:
+            if ',' in imagen_b64:
+                imagen_b64 = imagen_b64.split(',', 1)[1]
+            arreglo = np.frombuffer(base64.b64decode(imagen_b64), dtype=np.uint8)
+            frame = cv2.imdecode(arreglo, cv2.IMREAD_COLOR)
+            if frame is not None:
+                frames_bgr.append(frame)
+    except Exception:
+        return jsonify({'ok': False, 'mensaje': 'No se pudo leer el clip.'}), 400
+
+    if not frames_bgr:
+        return jsonify({'ok': False, 'mensaje': 'Clip inválido.'}), 400
+
+    resultado = evaluar_secuencia(frames_bgr, letra_objetivo)
+    _registrar_resultado(resultado, letra_objetivo)
     return jsonify({'ok': True, **resultado})
 
 # --- INICIO DE LA APLICACIÓN ---

@@ -12,6 +12,8 @@ solo a su propio rango.
 Por ahora solo el Bloque 1 (Abecedario) tiene contenido real. El Bloque 2
 se muestra bloqueado con un aviso de "próximamente" hasta que se
 implemente su contenido.
+
+Colocar este archivo en: backend/database/curriculum.py
 """
 
 from backend.database.conexion import obtener_conexion
@@ -59,7 +61,7 @@ BLOQUES = [
             },
             {
                 "id": "K-O", "titulo": "K – O",
-                "letras": ["K", "L", "M", "N", "O"],
+                "letras": ["K", "L", "LL", "M", "N", "Ñ", "O"],
                 "palabras_prueba": ["MANO", "LIMON", "CAJA"],
             },
             {

@@ -1,3 +1,4 @@
+// frontend/js/prueba.js
 // Igual que practica.js (misma cámara, misma tolerancia a fallos, misma
 // barra inferior), pero en vez de una lista plana de letras, recorre
 // PALABRAS completas letra por letra. Al terminar la última letra de la
@@ -10,6 +11,7 @@ let indiceLetraEnPalabra = 0;
 let evaluando = false;
 let pausado = false;
 let intervaloId = null;
+let grabandoClip = false;
 
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
@@ -63,6 +65,7 @@ function actualizarProgresoUI() {
     letraObjetivoEl.textContent = letraActual() || '';
     restablecerBarraInferior();
     actualizarReferencia();
+    prepararLetraConMovimiento();
 }
 
 function actualizarReferencia() {
@@ -99,8 +102,7 @@ function capturarFrameBase64() {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext('2d');
-    ctx.translate(canvas.width, 0);
-    ctx.scale(-1, 1);
+    // Sin espejo: igual que los datos de entrenamiento (el espejo visual lo hace el CSS)
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     return canvas.toDataURL('image/jpeg', 0.7);
 }
@@ -108,6 +110,7 @@ function capturarFrameBase64() {
 async function capturarYEvaluar() {
     if (evaluando || pausado || !window.LECCION.palabras.length) return;
     if (!video.videoWidth) return;
+    if (grabandoClip || ClipMovimiento.esDinamica(letraActual())) return;
 
     evaluando = true;
     const imagen = capturarFrameBase64();
@@ -132,6 +135,33 @@ async function capturarYEvaluar() {
     }
 }
 
+function prepararLetraConMovimiento() {
+    if (ClipMovimiento.esDinamica(letraActual())) {
+        ClipMovimiento.mostrarBoton(grabarMovimiento);
+        camaraOverlay.textContent = 'Esta letra lleva movimiento: pulsa "Grabar movimiento"';
+    } else {
+        ClipMovimiento.ocultarBoton();
+    }
+}
+
+async function grabarMovimiento() {
+    if (grabandoClip || pausado || !video.videoWidth) return;
+    grabandoClip = true;
+    ClipMovimiento.deshabilitarBoton(true);
+    try {
+        const data = await ClipMovimiento.grabarYEvaluar(
+            letraActual(), video, canvas, (texto) => { camaraOverlay.textContent = texto; }
+        );
+        procesarResultado(data);
+    } catch (error) {
+        console.error('Error evaluando el clip:', error);
+        camaraOverlay.textContent = 'Error al evaluar la seña.';
+    } finally {
+        grabandoClip = false;
+        ClipMovimiento.deshabilitarBoton(false);
+    }
+}
+
 function procesarResultado(data) {
     if (!data.ok) {
         camaraOverlay.textContent = 'Error al evaluar la seña.';
@@ -139,7 +169,9 @@ function procesarResultado(data) {
     }
 
     if (!data.mano_detectada) {
-        camaraOverlay.textContent = 'No se detecta tu mano';
+        camaraOverlay.textContent = data.clip_valido === false
+            ? 'No se vio tu mano durante la grabación. Pulsa Grabar e inténtalo de nuevo'
+            : 'No se detecta tu mano';
         return;
     }
 
@@ -152,12 +184,15 @@ function procesarResultado(data) {
         camaraOverlay.textContent = '¡Correcto! ✓';
         mostrarBarraExito();
     } else {
-        camaraOverlay.textContent = `Detecté: ${data.prediccion}`;
+        camaraOverlay.textContent = ClipMovimiento.esDinamica(letraActual())
+            ? `Detecté: ${data.prediccion}. Pulsa Grabar para reintentar`
+            : `Detecté: ${data.prediccion}`;
     }
 }
 
 function mostrarBarraExito() {
     pausado = true;
+    ClipMovimiento.ocultarBoton();
     feedbackBar.className = 'feedback-bar feedback-bar--ok';
     feedbackIcon.textContent = '✓';
     feedbackTitulo.textContent = '¡Bien hecho!';
@@ -194,7 +229,9 @@ function avanzarSiguienteLetra() {
 
     pausado = false;
     actualizarProgresoUI();
-    camaraOverlay.textContent = 'Buscando tu mano…';
+    if (!ClipMovimiento.esDinamica(letraActual())) {
+        camaraOverlay.textContent = 'Buscando tu mano…';
+    }
 }
 
 async function finalizarPrueba() {

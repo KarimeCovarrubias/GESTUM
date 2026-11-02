@@ -503,3 +503,34 @@ h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
         transform: translateY(-8deg) rotate(8deg) scale(1.05);
     }
 }
+
+/* ---------- Grabación de letras con movimiento ---------- */
+.btn-grabar-mov{
+    position: absolute;
+    top: 12px; right: 12px;
+    background: var(--teal, #1A8CA5);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 9px 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 3;
+}
+.btn-grabar-mov:disabled{ opacity: .55; cursor: default; }
+
+.aviso-grabacion{
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 64px;
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0,0,0,.6);
+    pointer-events: none;
+    z-index: 2;
+}
+.aviso-grabacion[hidden]{ display: none; }
