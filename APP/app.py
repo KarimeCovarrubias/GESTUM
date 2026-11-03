@@ -11,7 +11,9 @@ from backend.vision.evaluador import evaluar_frame, evaluar_secuencia
 
 from flask import Flask, request, jsonify, url_for, render_template, session, redirect
 from backend.database.conexion import inicializar_bd, obtener_conexion
-from backend.database.usuarios import crear_usuario, verificar_login, actualizar_racha_y_xp
+from backend.database.usuarios import (
+    crear_usuario, verificar_login, actualizar_racha_y_xp, reiniciar_racha_si_vencida
+)
 
 app = Flask(
     __name__,
@@ -100,6 +102,9 @@ def logout():
 def usuario_actual():
     if 'usuario_id' not in session:
         return jsonify({'logged_in': False}), 401
+
+    # Si pasó un día completo sin practicar, la racha regresa a 0 antes de mostrarla
+    reiniciar_racha_si_vencida(session['usuario_id'])
 
     conexion = obtener_conexion()
     cursor = conexion.cursor()
@@ -238,6 +243,15 @@ def api_prueba_aprobar():
 
     registrar_prueba_aprobada(session['usuario_id'], leccion_id)
     actualizar_racha_y_xp(session['usuario_id'], xp_ganado=XP_BONO_PRUEBA)
+    return jsonify({'ok': True})
+
+
+@app.route('/api/teoria/completar', methods=['POST'])
+def api_teoria_completar():
+    """Terminar la teoría de una lección cuenta como actividad del día (racha), sin XP."""
+    if 'usuario_id' not in session:
+        return jsonify({'ok': False}), 401
+    actualizar_racha_y_xp(session['usuario_id'], xp_ganado=0)
     return jsonify({'ok': True})
 
 

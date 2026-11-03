@@ -1,0 +1,113 @@
+/* frontend/css/estilo_salir.css
+   Cuadro "¿Seguro que quieres salir?" y botón secundario de las pantallas de inicio. */
+
+.salir-fondo{
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(11, 37, 69, 0.55);
+}
+.salir-fondo[hidden]{ display: none; }
+
+.salir-caja{
+    width: 100%;
+    max-width: 380px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 28px 24px 22px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.salir-icono{
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: #eef2f6;
+    display: grid;
+    place-items: center;
+    font-size: 2.4rem;
+}
+
+.salir-titulo{
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #0b2545;
+    margin: 0 0 8px;
+}
+
+.salir-texto{
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: #64748b;
+    margin: 0 0 20px;
+}
+
+.salir-btn-seguir,
+.salir-btn-salir{
+    display: block;
+    width: 100%;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+    border-radius: 14px;
+    cursor: pointer;
+}
+
+.salir-btn-seguir{
+    background: #139a8c;
+    color: #ffffff;
+    border: none;
+    padding: 14px;
+    box-shadow: 0 4px 0 #0d7167;
+    margin-bottom: 14px;
+}
+.salir-btn-seguir:hover{ background: #0f8377; }
+.salir-btn-seguir:active{ transform: translateY(2px); box-shadow: 0 2px 0 #0d7167; }
+
+.salir-btn-salir{
+    background: transparent;
+    color: #d9564a;
+    border: none;
+    padding: 10px;
+}
+.salir-btn-salir:hover{ background: #fff5f5; }
+
+/* Pantallas de inicio (práctica / prueba): botón "Volver al inicio" debajo de Comenzar */
+.gestum-footer-action.col{ flex-direction: column; align-items: stretch; }
+.gestum-footer-action.col .btn-gestum-secondary{ flex: none; width: 100%; }
+
+/* ---------- Práctica: botón Saltar y Siguiente bloqueado ---------- */
+.feedback-acciones{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-saltar{
+    background: #ffffff;
+    color: #5C7091;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 12px 22px;
+    border: 2px solid #cbd5e1;
+    border-radius: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.btn-saltar:hover:not(:disabled){ background: #f1f5f9; border-color: #94a3b8; }
+.btn-saltar:disabled{ opacity: 0.4; cursor: default; }
+
+.btn-continuar:disabled{
+    background: #cbd5e1;
+    color: #ffffff;
+    cursor: not-allowed;
+}
+.btn-continuar:disabled:hover{ background: #cbd5e1; }

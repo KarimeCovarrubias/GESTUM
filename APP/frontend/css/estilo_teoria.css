@@ -1,167 +1,124 @@
-:root{
-    --navy: #1B3A6B;
-    --navy-soft: #5C7091;
-    --teal: #1A8CA5;
-    --teal-dark: #13697C;
-    --gold: #E0A63E;
-    --bg: #F5F8FA;
-    --card: #FFFFFF;
-    --border: #E3E9EE;
-}
-
-*{ box-sizing: border-box; }
-
-body{
-    margin: 0;
-    background: var(--bg);
-    color: var(--navy);
-    font-family: 'Inter', sans-serif;
-    padding-bottom: 90px;
-}
-
-h1, h2{ font-family: 'Poppins', sans-serif; margin: 0; }
-
-.teoria-topbar{
-    padding: 16px 24px 0;
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-.back-link{
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--navy-soft);
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 600;
-}
+/* frontend/css/estilo_teoria.css
+   Se carga DESPUÉS de estilo_practica.css (usa sus variables, la barra superior
+   y el botón .btn-continuar). */
 
 .teoria-wrap{
-    max-width: 1100px; /* Ampliado para usar la pantalla completa */
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 10px 24px 0;
+    padding: 8px 16px 24px;
     text-align: center;
 }
 
-.teoria-wrap h1{ font-size: 24px; margin-bottom: 4px; }
-.eyebrow{ font-size: 13px; font-weight: 600; color: var(--navy-soft); margin: 0 0 4px; }
+.eyebrow{
+    margin: 6px 0 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy-soft);
+}
+
+.teoria-wrap h1{
+    font-size: 30px;
+    margin: 0 0 10px;
+}
 
 .intro-bloque{
-    font-size: 13.5px;
+    max-width: 720px;
+    margin: 0 auto 18px;
+    padding: 12px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    font-size: 12.5px;
     line-height: 1.5;
     color: var(--navy-soft);
-    margin: 0 auto 20px;
-    max-width: 800px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 18px;
     text-align: left;
 }
 
-/* Tarjeta principal */
-.letra-card {
+.letra-card{
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+    border-radius: 24px;
+    padding: 18px 22px 22px;
+    text-align: left;
+    box-shadow: 0 6px 20px rgba(27, 58, 107, 0.06);
 }
 
-.letra-header {
+.letra-card-head{
     display: flex;
+    align-items: baseline;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding: 0 8px;
 }
 
-.letra-nombre{ font-size: 32px; color: var(--navy); }
-.letra-progreso{ font-size: 14px; font-weight: 700; color: var(--navy-soft); }
-
-/* Disposición de Medios */
-.media-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
+.letra-grande{
+    font-family: 'Poppins', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--navy);
 }
 
-.media-column {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    text-align: left;
+.letra-contador{
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy-soft);
 }
 
-.media-tag {
-    font-size: 13px;
+.media-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+    margin-top: 12px;
+}
+
+.media-col h3{
+    margin: 0 0 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
     font-weight: 700;
     color: var(--navy-soft);
 }
 
 .media-box{
-    width: 100%;
     aspect-ratio: 4 / 3;
     max-height: 420px;
-    border-radius: 14px;
-    background: #FAFCFE;
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%;
+    display: grid;
+    place-items: center;
     overflow: hidden;
+    background: #fbfcfe;
+    border: 1px solid var(--border);
+    border-radius: 16px;
 }
 
 .media-box img,
-.media-box video{ width: 100%; height: 100%; object-fit: contain; }
-
-.sin-medio {
-    font-size: 13px;
-    color: var(--navy-soft);
-    font-weight: 600;
+.media-box video{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #ffffff;
 }
 
-.placeholder-icon{ font-size: 48px; opacity: 0.4; }
+.placeholder-icon{
+    font-size: 44px;
+    opacity: 0.3;
+}
 
-/* Footer Fijo */
-.teoria-footer {
+.teoria-footer{
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--card);
-    border-top: 1px solid var(--border);
-    padding: 14px 24px;
+    left: 0; right: 0; bottom: 0;
+    z-index: 30;
     display: flex;
     justify-content: center;
-    z-index: 100;
+    padding: 12px 20px;
+    background: var(--card);
+    border-top: 1px solid var(--border);
 }
 
-.btn-primary-glow{
+.teoria-footer .btn-continuar{
     width: 100%;
-    max-width: 450px;
-    background: var(--teal);
-    color: #fff;
-    border: none;
-    font-weight: 700;
-    font-size: 15px;
-    padding: 12px 24px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.2s ease;
+    max-width: 405px;
+    padding: 14px 22px;
 }
 
-.btn-primary-glow:hover {
-    background: var(--teal-dark);
-}
-
-/* Vista horizontal para Escritorio y Laptops */
-@media (min-width: 768px) {
-    .media-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 28px;
-    }
+@media (max-width: 700px){
+    .media-grid{ grid-template-columns: 1fr; gap: 16px; }
 }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestum · Prueba</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_practica.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_salir_leccion.css') }}">
 </head>
 <body>
 
@@ -27,15 +28,16 @@
             </div>
         </div>
 
-        <div class="gestum-footer-action">
+        <div class="gestum-footer-action col">
             <button id="btn-comenzar" class="btn-gestum-primary">COMENZAR PRUEBA</button>
+            <a href="{{ url_for('vista_user_home') }}" class="btn-gestum-secondary">VOLVER AL INICIO</a>
         </div>
     </div>
 
     <!-- Contenido real de la prueba: oculto hasta darle "Comenzar" -->
     <div id="practica-contenido" hidden>
         <header class="practica-topbar">
-            <a href="{{ url_for('vista_user_home') }}" class="icon-btn" aria-label="Salir de la prueba">✕</a>
+            <a href="{{ url_for('vista_user_home') }}" class="icon-btn" data-salir aria-label="Salir de la prueba">✕</a>
             <div class="progreso-track">
                 <div id="progreso-fill" class="progreso-fill" style="width:0%"></div>
             </div>
@@ -107,6 +109,7 @@
             siguienteUrl: {{ siguiente_leccion | tojson }}
         };
     </script>
+    <script src="{{ url_for('static', filename='js/salir_leccion.js') }}"></script>
     <script src="{{ url_for('static', filename='js/clip_movimiento.js') }}"></script>
     <script src="{{ url_for('static', filename='js/prueba.js') }}"></script>
 </body>

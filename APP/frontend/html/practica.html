@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestum · Práctica</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_practica.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_salir_leccion.css') }}">
 </head>
 <body>
 
@@ -27,15 +28,16 @@
             </div>
         </div>
 
-        <div class="gestum-footer-action">
+        <div class="gestum-footer-action col">
             <button id="btn-comenzar" class="btn-gestum-primary">COMENZAR</button>
+            <a href="{{ url_for('vista_user_home') }}" class="btn-gestum-secondary">VOLVER AL INICIO</a>
         </div>
     </div>
 
     <!-- Contenido real de la práctica: oculto hasta darle "Comenzar" -->
     <div id="practica-contenido" hidden>
         <header class="practica-topbar">
-            <a href="{{ url_for('vista_user_home') }}" class="icon-btn" aria-label="Salir de la lección">✕</a>
+            <a href="{{ url_for('vista_user_home') }}" class="icon-btn" data-salir aria-label="Salir de la lección">✕</a>
             <div class="progreso-track">
                 <div id="progreso-fill" class="progreso-fill" style="width:0%"></div>
             </div>
@@ -67,7 +69,10 @@
                     <p id="feedback-sub" class="feedback-sub">Realiza la seña o avanza manualmente.</p>
                 </div>
             </div>
-            <button id="btn-continuar" class="btn-continuar">Siguiente Letra</button>
+            <div class="feedback-acciones">
+                <button id="btn-saltar" class="btn-saltar" type="button">Saltar</button>
+                <button id="btn-continuar" class="btn-continuar" type="button" disabled>Siguiente Letra</button>
+            </div>
         </footer>
     </div>
 
@@ -76,16 +81,16 @@
         <div class="gestum-card">
             <div class="gestum-badge-icon">🎉</div>
             <h2 class="gestum-titulo-exito">¡Lección completada!</h2>
-            <p class="gestum-subtitulo-exito">Has dominado los ejercicios de esta lección.</p>
+            <p id="resultado-sub" class="gestum-subtitulo-exito">Has dominado los ejercicios de esta lección.</p>
 
             <div class="gestum-stats-grid">
                 <div class="gestum-stat-card">
                     <span class="stat-label">PUNTOS XP</span>
-                    <span class="stat-val">⚡ +{{ leccion.xp_total }}</span>
+                    <span class="stat-val">⚡ +<span id="resultado-xp">{{ leccion.xp_total }}</span></span>
                 </div>
                 <div class="gestum-stat-card">
                     <span class="stat-label">PRECISIÓN</span>
-                    <span class="stat-val">🎯 100%</span>
+                    <span class="stat-val">🎯 <span id="resultado-precision">100</span>%</span>
                 </div>
             </div>
         </div>
@@ -100,9 +105,11 @@
             id: {{ leccion.id | tojson }},
             titulo: {{ leccion.titulo | tojson }},
             letras: {{ leccion.letras | tojson }},
+            xpTotal: {{ leccion.xp_total }},
             siguienteUrl: {{ siguiente_leccion | tojson }}
         };
     </script>
+    <script src="{{ url_for('static', filename='js/salir_leccion.js') }}"></script>
     <script src="{{ url_for('static', filename='js/clip_movimiento.js') }}"></script>
     <script src="{{ url_for('static', filename='js/practica.js') }}"></script>
 </body>

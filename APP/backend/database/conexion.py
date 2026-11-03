@@ -44,7 +44,7 @@ def inicializar_bd():
             nombreUsuario TEXT NOT NULL UNIQUE,
             edad INTEGER,
             contrasena_hash TEXT NOT NULL,
-            fecha_registro TEXT NOT NULL DEFAULT (datetime('now')),
+            fecha_registro TEXT NOT NULL DEFAULT (datetime('now', '-7 hours')),
             racha_actual INTEGER NOT NULL DEFAULT 0,
             racha_maxima INTEGER NOT NULL DEFAULT 0,
             ultima_practica TEXT,
@@ -70,7 +70,7 @@ def inicializar_bd():
             usuario_id INTEGER NOT NULL,
             letra_id INTEGER NOT NULL,
             resultado TEXT NOT NULL CHECK (resultado IN ('correcto', 'incorrecto')),
-            fecha_hora TEXT NOT NULL DEFAULT (datetime('now')),
+            fecha_hora TEXT NOT NULL DEFAULT (datetime('now', '-7 hours')),
             FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE CASCADE,
             FOREIGN KEY (letra_id) REFERENCES letras (id) ON DELETE CASCADE
         )
@@ -97,7 +97,7 @@ def inicializar_bd():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             usuario_id INTEGER NOT NULL,
             leccion_id TEXT NOT NULL,
-            fecha_hora TEXT NOT NULL DEFAULT (datetime('now')),
+            fecha_hora TEXT NOT NULL DEFAULT (datetime('now', '-7 hours')),
             FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE CASCADE,
             UNIQUE (usuario_id, leccion_id)
         )

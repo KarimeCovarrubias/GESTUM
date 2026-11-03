@@ -5,6 +5,8 @@ let evaluando = false;
 let pausado = false;
 let intervaloId = null;
 let grabandoClip = false;
+let aciertos = 0;   // letras hechas bien
+let saltadas = 0;   // letras que el usuario saltó
 
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
@@ -20,6 +22,7 @@ const feedbackIcon = document.getElementById('feedback-icon');
 const feedbackTitulo = document.getElementById('feedback-titulo');
 const feedbackSub = document.getElementById('feedback-sub');
 const btnContinuar = document.getElementById('btn-continuar');
+const btnSaltar = document.getElementById('btn-saltar');
 
 function letraActual() {
     return window.LECCION.letras[indiceActual];
@@ -154,7 +157,11 @@ function procesarResultado(data) {
 }
 
 function mostrarBarraExito() {
+    if (pausado) return;   // ya se contó esta letra
     pausado = true;
+    aciertos += 1;
+    btnContinuar.disabled = false;
+    if (btnSaltar) btnSaltar.disabled = true;
     ClipMovimiento.ocultarBoton();
     feedbackBar.className = 'feedback-bar feedback-bar--ok';
     feedbackIcon.textContent = '✓';
@@ -167,6 +174,8 @@ function mostrarBarraExito() {
 
 function restablecerBarraInferior() {
     feedbackBar.className = 'feedback-bar';
+    btnContinuar.disabled = true;           // solo se activa al acertar la letra
+    if (btnSaltar) btnSaltar.disabled = false;
     feedbackIcon.textContent = '➔';
     
     const letra = letraActual();
@@ -179,6 +188,12 @@ function restablecerBarraInferior() {
         feedbackSub.textContent = 'Haz clic para finalizar';
         btnContinuar.textContent = 'Siguiente Lección';
     }
+}
+
+function saltarLetra() {
+    if (pausado || grabandoClip) return;   // ya la hizo bien, o está grabando
+    saltadas += 1;
+    avanzarSiguienteLetra();
 }
 
 function avanzarSiguienteLetra() {
@@ -197,6 +212,25 @@ function avanzarSiguienteLetra() {
     }
 }
 
+// XP = (XP total de la lección / letras) x letras hechas bien. Precisión = hechas bien / letras.
+function mostrarResultados() {
+    const total = window.LECCION.letras.length;
+    const xpPorLetra = (window.LECCION.xpTotal || 0) / total;
+    const xp = Math.round(aciertos * xpPorLetra);
+    const precision = Math.round((aciertos / total) * 100);
+
+    const xpEl = document.getElementById('resultado-xp');
+    const precisionEl = document.getElementById('resultado-precision');
+    const subEl = document.getElementById('resultado-sub');
+    if (xpEl) xpEl.textContent = xp;
+    if (precisionEl) precisionEl.textContent = precision;
+    if (subEl && saltadas > 0) {
+        subEl.textContent = saltadas === 1
+            ? 'Saltaste 1 letra. Vuelve a practicarla para dominarla.'
+            : `Saltaste ${saltadas} letras. Vuelve a practicarlas para dominarlas.`;
+    }
+}
+
 function finalizarLeccion() {
     if (typeof intervaloId !== 'undefined' && intervaloId) {
         clearInterval(intervaloId);
@@ -207,6 +241,8 @@ function finalizarLeccion() {
         video.srcObject.getTracks().forEach(track => track.stop());
     }
 
+    mostrarResultados();
+
     const pantallaCompleta = document.getElementById('pantalla-completa');
     if (pantallaCompleta) {
         pantallaCompleta.removeAttribute('hidden');
@@ -214,6 +250,7 @@ function finalizarLeccion() {
 }
 
 btnContinuar.addEventListener('click', avanzarSiguienteLetra);
+if (btnSaltar) btnSaltar.addEventListener('click', saltarLetra);
 
 const btnComenzar = document.getElementById('btn-comenzar');
 const pantallaInicio = document.getElementById('pantalla-inicio');

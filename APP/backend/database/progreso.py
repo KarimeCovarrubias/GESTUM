@@ -4,6 +4,7 @@ de una seña y consultar el avance (para pantallas de práctica y perfil).
 """
 
 from backend.database.conexion import obtener_conexion
+from backend.database.tiempo import ahora_texto
 
 
 def obtener_o_crear_letra(letra, tipo="estatica", dificultad="facil", imagen_referencia=None):
@@ -50,9 +51,9 @@ def registrar_intento(usuario_id, letra, resultado):
 
     # 1. Insertar el intento en el historial detallado
     cursor.execute("""
-        INSERT INTO intentos (usuario_id, letra_id, resultado)
-        VALUES (?, ?, ?)
-    """, (usuario_id, letra_id, resultado))
+        INSERT INTO intentos (usuario_id, letra_id, resultado, fecha_hora)
+        VALUES (?, ?, ?, ?)
+    """, (usuario_id, letra_id, resultado, ahora_texto()))
 
     # 2. Actualizar (o crear) la fila resumen en PROGRESO para esa letra
     es_correcto = 1 if resultado == "correcto" else 0
@@ -148,10 +149,10 @@ def registrar_prueba_aprobada(usuario_id, leccion_id):
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     cursor.execute("""
-        INSERT INTO pruebas_aprobadas (usuario_id, leccion_id)
-        VALUES (?, ?)
+        INSERT INTO pruebas_aprobadas (usuario_id, leccion_id, fecha_hora)
+        VALUES (?, ?, ?)
         ON CONFLICT (usuario_id, leccion_id) DO NOTHING
-    """, (usuario_id, leccion_id))
+    """, (usuario_id, leccion_id, ahora_texto()))
     conexion.commit()
     conexion.close()
 

@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestum · {{ leccion.titulo }}</title>
+    <title>Gestum · Teoría {{ leccion.titulo }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_practica.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_teoria.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_salir_leccion.css') }}">
 </head>
 <body>
-    <header class="teoria-topbar">
-        <a href="{{ url_for('vista_user_home') }}" class="back-link" title="Volver al inicio">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            <span>Volver al inicio</span>
-        </a>
+    <header class="practica-topbar">
+        <a href="{{ url_for('vista_user_home') }}" class="icon-btn" data-salir aria-label="Salir de la lección">✕</a>
+        <div class="progreso-track">
+            <div id="progreso-fill" class="progreso-fill" style="width:0%"></div>
+        </div>
     </header>
 
     <main class="teoria-wrap">
@@ -25,43 +24,38 @@
         <p class="intro-bloque">{{ leccion.intro_bloque }}</p>
         {% endif %}
 
-        <div class="letra-card">
-            <div class="letra-header">
-                <h2 id="letra-nombre" class="letra-nombre">?</h2>
-                <span id="letra-contador" class="letra-progreso">1 / 1</span>
+        <section class="letra-card">
+            <div class="letra-card-head">
+                <span id="letra-nombre" class="letra-grande"></span>
+                <span id="letra-contador" class="letra-contador"></span>
             </div>
 
-            <!-- Grilla en 2 columnas para Imagen + Video -->
             <div class="media-grid">
-                <div class="media-column">
-                    <span class="media-tag">Imagen de referencia</span>
-                    <div class="media-box" id="media-box-img">
-                        <span class="placeholder-icon">🤟</span>
-                    </div>
+                <div class="media-col">
+                    <h3>Imagen de referencia</h3>
+                    <div id="imagen-box" class="media-box"></div>
                 </div>
-
-                <div class="media-column">
-                    <span class="media-tag">Video Explicativo</span>
-                    <div class="media-box" id="media-box-video">
-                        <span class="placeholder-icon">🎥</span>
-                    </div>
+                <div class="media-col">
+                    <h3>Video Explicativo</h3>
+                    <div id="video-box" class="media-box"></div>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
 
-    <!-- Barra de navegación fija al final -->
     <footer class="teoria-footer">
-        <button id="btn-siguiente" class="btn-primary-glow">Siguiente Letra</button>
+        <button id="btn-siguiente" class="btn-continuar" type="button">Siguiente Letra</button>
     </footer>
 
     <script>
+        window.STATIC_BASE = {{ url_for('static', filename='') | tojson }};
         window.LECCION = {
             id: {{ leccion.id | tojson }},
             titulo: {{ leccion.titulo | tojson }},
             letras: {{ leccion.letras | tojson }}
         };
     </script>
+    <script src="{{ url_for('static', filename='js/salir_leccion.js') }}"></script>
     <script src="{{ url_for('static', filename='js/teoria.js') }}"></script>
 </body>
 </html>
