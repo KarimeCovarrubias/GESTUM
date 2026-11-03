@@ -37,3 +37,46 @@ Ejecuta estas 2 líneas seguidas en tu terminal actual:
 ---- INSTALAR LOS requirements.txt ----
 
 pip install -r requirements.txt
+
+
+=====================================================================
+
+EN UBUNTU
+Instala las herramientas oficiales que Ubuntu requiere para compilar Python desde cero:
+    sudo apt update && sudo apt install build-essential libssl-dev zlib1g-dev \
+l   ibbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+    libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev -y
+
+Descargar el código fuente oficial de Python 3.12:
+    wget https://www.python.org/ftp/python/3.12.3/Python-3.12.3.tgz
+
+Descomprime el archivo:
+    tar -xf Python-3.12.3.tgz
+Verificacion: Si ejecutas el comando ls, ahora verás la carpeta Python-3.12.3 
+listada en color azul (o destacada como directorio).
+
+Accede al directorio recién creado:
+    cd Python-3.12.3
+
+Configura la instalación usando altinstall para no sobrescribir el Python por defecto de tu sistema Ubuntu:
+    ./configure --enable-optimizations
+    make -j$(nproc)
+    sudo make altinstall
+
+Verificacion: Al finalizar, ejecuta python3.12 --version y te devolverá Python 3.12.3.
+
+-----------------------------------------
+CREAR ENTORNO VIRTUAL:
+python3.12 -m venv venv
+
+ACTUALIZAR E INSTALAR LIBRERÍAS:
+pip install --upgrade pip
+pip install -r requirements.txt
+
+------------------------------------------
+
+ACCEDER AL ENTORNO VIRTUAL EN UBUNTU
+cd APP
+source venv/bin/activate
+
+
