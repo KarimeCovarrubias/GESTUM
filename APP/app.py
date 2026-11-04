@@ -220,7 +220,7 @@ def vista_prueba():
     if 'usuario_id' not in session:
         return redirect('/login')
     leccion_id = request.args.get('leccion', '')
-    leccion = obtener_leccion(leccion_id)
+    leccion = obtener_leccion(leccion_id, session['usuario_id'])   # palabras propias de este usuario
     if leccion is None:
         return redirect('/user-home')
 

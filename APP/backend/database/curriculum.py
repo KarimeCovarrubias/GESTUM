@@ -13,8 +13,10 @@ Por ahora solo el Bloque 1 (Abecedario) tiene contenido real. El Bloque 2
 se muestra bloqueado con un aviso de "próximamente" hasta que se
 implemente su contenido.
 
-Colocar este archivo en: backend/database/curriculum.py
 """
+
+import hashlib
+import random
 
 from backend.database.conexion import obtener_conexion
 from backend.database.progreso import obtener_pruebas_aprobadas
@@ -35,6 +37,53 @@ XP_BONO_PRUEBA = 20  # XP extra, además del XP por letra, solo por aprobar la p
 # Ponlo en False cuando quieras que el desbloqueo real (secuencial) vuelva
 # a aplicar -- antes de que usuarios reales usen la app.
 FORZAR_DESBLOQUEO_TOTAL = True
+
+# --- Bancos de palabras para las PRUEBAS ---
+# Cada prueba pide 3 palabras. Se eligen del banco de su lección, usando SOLO
+# letras ya vistas hasta ese punto. Evita LL/Ñ (son una sola seña de dos
+# caracteres) y letras repetidas seguidas (la mano ya estaría puesta y la
+# letra se daría por buena sola).
+PALABRAS_POR_PRUEBA = 3
+
+BANCO_PALABRAS = {
+    "A-E": ["CADA", "DEBE", "BEBA", "BEBE", "CEBADA", "EDAD", "CABE", "BECADA",
+            "BECADO", "CABA", "CABADA", "CABED", "CEDA", "CEDE", "DADA", "ABACA", 
+            "ACABE", "DABA", "DEBA", "DE", "EJE", "EDAD", "IDA"],
+    "F-J": ["CAJA", "BAJA", "FAJA", "HIJA", "FIJA", "JADE", "HADA", "DIGA", "JEFE",
+            "CAFE", "JEFA", "BAHIA", "ABEJA", "DEJA", "BEBIDA", "GAFA", "EDAD",
+            "CEJA", "HACIA", "IDEA", "HICE", "CAMA", "CHICA", "CHIVO", "CHICO",
+            "HACHA"],
+    "K-O": ["MANO", "LIMON", "MELON", "NIDO", "DEDO", "LADO", "LOMA", "MONO",
+            "MODA", "MOLE", "MALO", "ALMA", "AMIGO", "BOCA", "COMA", "DADO",
+            "FOCO", "HIJO", "JAMON", "MIEDO", "CAJA", "CAFE", "ABEJA", "OLMO",
+            "LOBO", "KILO", "KOALA"],
+    "P-T": ["CASA", "PATO", "LIBRO", "SOPA", "PAPA", "MESA", "PISO", "TORO",
+            "PLATO", "ROSA", "MAPA", "TAPA", "SAPO", "POLO", "PELO", "CERO",
+            "TRES", "CARTA", "PARTE", "OSITO", "SALTO", "PASTA", "RATON", "PLANO"],
+    "U-Z": ["AZUL", "VUELO", "ZAPATO", "UVA", "VASO", "VIDA", "LUZ", "YATE",
+            "TAZA", "QUESO", "AGUA", "PLAYA", "VOZ", "SUELO", "MUNDO", "LUNA",
+            "FUEGO", "PUERTA", "NUBE", "MAYO", "HUEVO", "CUATRO", "TAXI", "VERDE"],
+    "Repaso-1": ["SOL", "LUNA", "GATO", "CIELO", "MAR", "FLOR", "AMIGO", "FELIZ",
+                 "NUBE", "PAJARO", "ZAPATO", "VERDE", "ROJO", "AZUL", "QUESO",
+                 "JUGO", "TAXI", "LIBRO", "CASA", "MUNDO", "GESTO", "MANOS"],
+}
+
+
+def seleccionar_palabras_prueba(leccion_id, usuario_id, cantidad=PALABRAS_POR_PRUEBA):
+    """
+    Elige las palabras de la prueba de ESTE usuario en ESTA lección.
+    - Distintas personas reciben palabras distintas.
+    - Si el mismo usuario repite la lección, recibe las MISMAS palabras
+      (la semilla depende solo de usuario + lección, no de la fecha ni de
+      cuántas veces entre).
+    Devuelve None si la lección no tiene banco (se usa la lista fija).
+    """
+    banco = BANCO_PALABRAS.get(leccion_id)
+    if not banco:
+        return None
+    azar = random.Random(hashlib.sha256(f"{usuario_id}:{leccion_id}".encode("utf-8")).hexdigest())
+    return azar.sample(banco, min(cantidad, len(banco)))
+
 
 BLOQUES = [
     {
@@ -95,7 +144,7 @@ BLOQUES = [
 ]
 
 
-def obtener_leccion(leccion_id):
+def obtener_leccion(leccion_id, usuario_id=None):
     """
     Busca una lección por su id en cualquier bloque. Le anexa el texto
     introductorio del bloque (intro_bloque) SOLO si es la primera lección
@@ -112,7 +161,13 @@ def obtener_leccion(leccion_id):
                 )
                 leccion_con_intro["xp_total"] = len(leccion["letras"]) * XP_POR_LETRA
 
-                letras_en_palabras = sum(len(palabra) for palabra in leccion["palabras_prueba"])
+                # Con usuario: palabras de la prueba propias de esa persona
+                if usuario_id is not None:
+                    elegidas = seleccionar_palabras_prueba(leccion_id, usuario_id)
+                    if elegidas:
+                        leccion_con_intro["palabras_prueba"] = elegidas
+
+                letras_en_palabras = sum(len(palabra) for palabra in leccion_con_intro["palabras_prueba"])
                 leccion_con_intro["xp_prueba"] = letras_en_palabras * XP_POR_LETRA + XP_BONO_PRUEBA
 
                 return leccion_con_intro

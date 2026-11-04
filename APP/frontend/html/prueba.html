@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestum · Prueba</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_practica.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_prueba.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_salir_leccion.css') }}">
 </head>
 <body>
@@ -43,27 +44,40 @@
             </div>
         </header>
 
-        <main class="practica-wrap">
-            <h1 id="leccion-titulo">Prueba: {{ leccion.titulo }}</h1>
-            <p class="letra-actual" id="palabra-contador">Palabra 1 de {{ leccion.palabras_prueba|length }}</p>
-            <p class="letra-actual">
-                <span id="palabra-letras"></span>
-                &nbsp;— muestra la letra: <strong id="letra-objetivo">?</strong>
-            </p>
+        <main class="prueba-wrap">
+            <div class="prueba-head">
+                <span class="prueba-chip">📝 Prueba · {{ leccion.titulo }}</span>
+                <div id="palabra-pasos" class="palabra-pasos" aria-label="Palabras de la prueba"></div>
+            </div>
+
+            <div id="palabra-contador" class="palabra-contador">Palabra 1 de {{ leccion.palabras_prueba|length }}</div>
+            <div id="palabra-letras" class="palabra-tiles"></div>
+
+            <div class="pista">
+                Muestra la letra <strong id="letra-objetivo">?</strong>
+                <span id="aviso-mov" class="pista-mov" hidden>↻ lleva movimiento</span>
+            </div>
 
             <div class="practica-grid">
-                <div class="referencia-box">
-                    <div class="referencia-placeholder" id="referencia-placeholder"></div>
-                    <img id="referencia-img" class="referencia-img" hidden alt="Referencia de la seña">
+                <div class="caja-col">
+                    <span class="caja-etiqueta">Así se hace</span>
+                    <div class="referencia-box">
+                        <div class="referencia-placeholder" id="referencia-placeholder"></div>
+                        <img id="referencia-img" class="referencia-img" hidden alt="Referencia de la seña">
+                    </div>
                 </div>
 
-                <div class="camara-box">
-                    <video id="video" autoplay playsinline muted></video>
-                    <canvas id="canvas" hidden></canvas>
-                    <div id="camara-overlay" class="camara-overlay">Iniciando cámara…</div>
+                <div class="caja-col">
+                    <span class="caja-etiqueta">Tu cámara</span>
+                    <div class="camara-box" id="camara-box">
+                        <video id="video" autoplay playsinline muted></video>
+                        <canvas id="canvas" hidden></canvas>
+                        <div id="camara-overlay" class="camara-overlay estado-buscando">Iniciando cámara…</div>
+                    </div>
                 </div>
             </div>
         </main>
+        <div id="toast-palabra" class="toast-palabra" role="status">¡Palabra completada! 🎉</div>
 
         <footer id="feedback-bar" class="feedback-bar">
             <div class="feedback-info" id="feedback-info">

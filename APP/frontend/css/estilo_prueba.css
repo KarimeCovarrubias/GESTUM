@@ -1,0 +1,180 @@
+/* Pantalla de la PRUEBA. Se carga DESPUÉS de estilo_practica.css. */
+
+.prueba-wrap{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 16px 0;
+    text-align: center;
+}
+
+.prueba-head{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.prueba-chip{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 7px 16px;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--navy-soft);
+}
+
+.palabra-pasos{ display: flex; gap: 8px; }
+
+.paso{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 13px;
+    background: var(--border);
+    color: var(--navy-soft);
+    border: 2px solid transparent;
+    transition: all 0.25s ease;
+}
+.paso.actual{
+    background: #fff;
+    border-color: var(--gold);
+    color: var(--navy);
+    box-shadow: 0 0 0 4px rgba(224, 166, 62, 0.18);
+}
+.paso.done{ background: var(--teal); color: #fff; }
+
+.palabra-contador{
+    margin: 12px 0 4px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy-soft);
+}
+
+/* ---------- La palabra, letra por letra ---------- */
+.palabra-tiles{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 6px 0 10px;
+    min-height: 82px;
+}
+
+.tile-letra{
+    width: 62px;
+    height: 72px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    background: var(--card);
+    border: 2px solid var(--border);
+    color: #a9b6c8;
+    transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.tile-letra.done{
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+}
+
+.tile-letra.current{
+    border-color: var(--gold);
+    color: var(--navy);
+    box-shadow: 0 10px 20px rgba(224, 166, 62, 0.28);
+    animation: latido 1.6s ease-in-out infinite;
+}
+
+.tile-letra.current.exito{
+    background: var(--ok);
+    border-color: var(--ok);
+    color: #fff;
+    box-shadow: 0 10px 22px rgba(31, 157, 85, 0.35);
+    animation: pop 0.45s ease;
+}
+
+@keyframes latido{
+    0%, 100%{ transform: translateY(-3px); }
+    50%{ transform: translateY(-9px); }
+}
+@keyframes pop{
+    0%{ transform: scale(0.8); }
+    60%{ transform: scale(1.18); }
+    100%{ transform: scale(1); }
+}
+
+.pista{
+    margin: 4px 0 18px;
+    font-size: 16px;
+    color: var(--navy-soft);
+}
+.pista strong{ color: var(--navy); font-size: 22px; }
+
+.pista-mov{
+    display: inline-block;
+    margin-left: 10px;
+    padding: 3px 12px;
+    border-radius: 999px;
+    background: #fff4dc;
+    color: #8a5a00;
+    font-size: 12px;
+    font-weight: 700;
+}
+.pista-mov[hidden]{ display: none; }
+
+/* ---------- Referencia + cámara ---------- */
+.caja-col{ display: flex; flex-direction: column; gap: 8px; width: 100%; }
+
+.caja-etiqueta{
+    text-align: left;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--navy-soft);
+}
+
+.referencia-box,
+.camara-box{
+    transition: box-shadow 0.25s ease;
+}
+
+.camara-box.camara-ok{
+    box-shadow: 0 0 0 4px var(--ok), 0 12px 30px rgba(31, 157, 85, 0.28);
+}
+
+.camara-overlay{ transition: background 0.2s ease; }
+.camara-overlay.estado-buscando{ background: rgba(27, 58, 107, 0.78); }
+.camara-overlay.estado-detecto{ background: rgba(224, 166, 62, 0.94); color: #3d2a00; }
+.camara-overlay.estado-ok{ background: rgba(31, 157, 85, 0.94); }
+
+/* ---------- Aviso al terminar una palabra ---------- */
+.toast-palabra{
+    position: fixed;
+    top: 72px;
+    left: 50%;
+    z-index: 50;
+    transform: translate(-50%, -16px);
+    opacity: 0;
+    pointer-events: none;
+    padding: 12px 24px;
+    border-radius: 999px;
+    background: var(--ok);
+    color: #fff;
+    font-weight: 800;
+    font-size: 15px;
+    box-shadow: 0 10px 26px rgba(31, 157, 85, 0.35);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.toast-palabra.show{ opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 520px){
+    .tile-letra{ width: 50px; height: 60px; font-size: 28px; }
+}

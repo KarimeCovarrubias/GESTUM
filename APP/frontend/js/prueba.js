@@ -1,4 +1,3 @@
-// frontend/js/prueba.js
 // Igual que practica.js (misma cámara, misma tolerancia a fallos, misma
 // barra inferior), pero en vez de una lista plana de letras, recorre
 // PALABRAS completas letra por letra. Al terminar la última letra de la
@@ -19,6 +18,10 @@ const camaraOverlay = document.getElementById('camara-overlay');
 const letraObjetivoEl = document.getElementById('letra-objetivo');
 const palabraLetrasEl = document.getElementById('palabra-letras');
 const palabraContadorEl = document.getElementById('palabra-contador');
+const palabraPasosEl = document.getElementById('palabra-pasos');
+const avisoMovEl = document.getElementById('aviso-mov');
+const camaraBox = document.getElementById('camara-box');
+const toastPalabra = document.getElementById('toast-palabra');
 const progresoFill = document.getElementById('progreso-fill');
 const referenciaPlaceholder = document.getElementById('referencia-placeholder');
 const referenciaImg = document.getElementById('referencia-img');
@@ -44,25 +47,59 @@ function esUltimaLetraDeTodo() {
     return esUltimaPalabra && esUltimaLetra;
 }
 
-function actualizarProgresoUI() {
-    const totalPalabras = window.LECCION.palabras.length;
-    progresoFill.style.width = totalPalabras ? `${(indicePalabra / totalPalabras) * 100}%` : '0%';
+// Letras ya hechas en toda la prueba (para la barra de arriba)
+function letrasHechas() {
+    let hechas = 0;
+    for (let i = 0; i < indicePalabra; i++) hechas += window.LECCION.palabras[i].length;
+    return hechas + indiceLetraEnPalabra;
+}
+
+function totalLetras() {
+    return window.LECCION.palabras.reduce((suma, palabra) => suma + palabra.length, 0);
+}
+
+// Dibuja los círculos de palabras y las fichas de la palabra actual.
+// Si 'exito' es true, la letra actual se marca como lograda (verde).
+function renderPalabra(exito = false) {
+    const palabras = window.LECCION.palabras;
+
+    palabraPasosEl.innerHTML = palabras
+        .map((_, i) => {
+            if (i < indicePalabra) return '<span class="paso done">✓</span>';
+            if (i === indicePalabra) return `<span class="paso actual">${i + 1}</span>`;
+            return `<span class="paso">${i + 1}</span>`;
+        })
+        .join('');
 
     const palabra = palabraActual();
-    palabraContadorEl.textContent = `Palabra ${indicePalabra + 1} de ${totalPalabras}`;
+    palabraContadorEl.textContent = `Palabra ${indicePalabra + 1} de ${palabras.length}`;
 
     if (palabra) {
         palabraLetrasEl.innerHTML = palabra
             .split('')
             .map((letra, i) => {
-                if (i < indiceLetraEnPalabra) return `<span style="opacity:.4">${letra}</span>`;
-                if (i === indiceLetraEnPalabra) return `<strong>${letra}</strong>`;
-                return letra;
+                if (i < indiceLetraEnPalabra) return `<span class="tile-letra done">${letra}</span>`;
+                if (i === indiceLetraEnPalabra) {
+                    return `<span class="tile-letra current${exito ? ' exito' : ''}">${exito ? '✓' : letra}</span>`;
+                }
+                return `<span class="tile-letra">${letra}</span>`;
             })
             .join('');
     }
+}
+
+function actualizarProgresoUI() {
+    const total = totalLetras();
+    progresoFill.style.width = total ? `${(letrasHechas() / total) * 100}%` : '0%';
+
+    renderPalabra(false);
+
+    // Cámara y marco vuelven al estado "buscando" con cada letra nueva
+    camaraBox.classList.remove('camara-ok');
+    camaraOverlay.className = 'camara-overlay estado-buscando';
 
     letraObjetivoEl.textContent = letraActual() || '';
+    if (avisoMovEl) avisoMovEl.hidden = !ClipMovimiento.esDinamica(letraActual());
     restablecerBarraInferior();
     actualizarReferencia();
     prepararLetraConMovimiento();
@@ -162,37 +199,49 @@ async function grabarMovimiento() {
     }
 }
 
+function setEstado(clase, texto) {
+    camaraOverlay.className = `camara-overlay ${clase}`;
+    camaraOverlay.textContent = texto;
+}
+
 function procesarResultado(data) {
     if (!data.ok) {
-        camaraOverlay.textContent = 'Error al evaluar la seña.';
+        setEstado('estado-detecto', 'Error al evaluar la seña.');
         return;
     }
 
     if (!data.mano_detectada) {
-        camaraOverlay.textContent = data.clip_valido === false
+        setEstado('estado-buscando', data.clip_valido === false
             ? 'No se vio tu mano durante la grabación. Pulsa Grabar e inténtalo de nuevo'
-            : 'No se detecta tu mano';
+            : 'No se detecta tu mano');
         return;
     }
 
     if (!data.modelo_listo) {
-        camaraOverlay.textContent = 'Modelo no disponible';
+        setEstado('estado-detecto', 'Modelo no disponible');
         return;
     }
 
     if (data.correcto) {
-        camaraOverlay.textContent = '¡Correcto! ✓';
+        setEstado('estado-ok', '¡Correcto! ✓');
         mostrarBarraExito();
     } else {
-        camaraOverlay.textContent = ClipMovimiento.esDinamica(letraActual())
+        setEstado('estado-detecto', ClipMovimiento.esDinamica(letraActual())
             ? `Detecté: ${data.prediccion}. Pulsa Grabar para reintentar`
-            : `Detecté: ${data.prediccion}`;
+            : `Detecté: ${data.prediccion}`);
     }
 }
 
 function mostrarBarraExito() {
+    if (pausado) return;
     pausado = true;
     ClipMovimiento.ocultarBoton();
+    camaraBox.classList.add('camara-ok');
+    renderPalabra(true);
+    if (indiceLetraEnPalabra === palabraActual().length - 1) {
+        toastPalabra.classList.add('show');
+        setTimeout(() => toastPalabra.classList.remove('show'), 1800);
+    }
     feedbackBar.className = 'feedback-bar feedback-bar--ok';
     feedbackIcon.textContent = '✓';
     feedbackTitulo.textContent = '¡Bien hecho!';
@@ -235,6 +284,7 @@ function avanzarSiguienteLetra() {
 }
 
 async function finalizarPrueba() {
+    progresoFill.style.width = '100%';
     if (intervaloId) clearInterval(intervaloId);
 
     if (video && video.srcObject) {
