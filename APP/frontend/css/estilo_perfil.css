@@ -1,0 +1,297 @@
+/* Contenedor general de perfil alineado */
+.perfil-wrap {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    box-sizing: border-box;
+}
+
+/* Tarjeta de Identidad */
+.perfil-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.perfil-banner {
+    height: 120px;
+    background: linear-gradient(135deg, #139a8c, #0b2545);
+}
+
+.perfil-identidad {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 0 2rem 1.5rem 2rem;
+}
+
+/* El avatar sube sobre el banner; el nombre queda completo en la zona blanca */
+.perfil-identidad .perfil-avatar { margin-top: -48px; }
+.perfil-textos { padding-top: 0.9rem; min-width: 0; }
+
+.perfil-avatar {
+    width: 96px;
+    height: 96px;
+    background-color: #0b2545;
+    color: #ffffff;
+    font-size: 2.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 4px solid #ffffff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+
+.perfil-textos h1 {
+    font-size: 1.6rem;
+    line-height: 1.2;
+    color: #0b2545;
+    margin: 0 0 0.2rem 0;
+    overflow-wrap: anywhere;
+}
+
+.perfil-user {
+    font-size: 0.95rem;
+    color: #64748b;
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Cuadrícula de Estadísticas Superiores */
+.perfil-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+}
+
+.perfil-stat {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+    position: relative;
+}
+
+.perfil-stat-icono {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.perfil-stat-valor {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0b2545;
+    line-height: 1.2;
+}
+
+.perfil-stat-valor--texto {
+    font-size: 1.1rem;
+    padding-top: 0.3rem;
+}
+
+.perfil-stat-etiqueta {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+}
+
+/* Cuadrícula inferior para equilibrar el espacio */
+.perfil-grid-inferior {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .perfil-grid-inferior {
+        grid-template-columns: 1fr;
+    }
+}
+
+.perfil-seccion-bloque {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+}
+
+.perfil-seccion-bloque h3 {
+    font-size: 1.1rem;
+    color: #0b2545;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 0.5rem;
+}
+
+/* Insignias */
+.insignias-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.insignia-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.insignia-item.bloqueada {
+    opacity: 0.5;
+}
+
+.insignia-icono {
+    font-size: 2rem;
+    background: #ffffff;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+}
+
+.insignia-info h4 {
+    font-size: 0.95rem;
+    color: #0b2545;
+    margin: 0 0 0.2rem 0;
+}
+
+.insignia-info p {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0;
+}
+
+/* Resumen de actividad */
+.resumen-caja {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.resumen-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.resumen-fila:last-child {
+    border-bottom: none;
+}
+
+.resumen-fila strong {
+    color: #0b2545;
+}
+
+.badge-activo {
+    background: #e6f4f1;
+    color: #139a8c;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/* Tarjetas de estadísticas alineadas y estables */
+.perfil-stat {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    position: relative;
+    overflow: hidden; /* Evita que cualquier elemento interno sobresalga */
+    box-sizing: border-box;
+    /* Transición suave para todos los cambios */
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+/* Efecto hover uniforme y sin saltos raros */
+.perfil-stat:hover {
+    transform: translateY(-4px); /* Eleva toda la tarjeta suavemente */
+    box-shadow: 0 12px 20px -4px rgba(11, 37, 69, 0.08);
+    border-color: #cbd5e1;
+}
+
+/* Colores sutiles para los bordes al pasar el cursor sin deformar la caja */
+.perfil-stat.perfil-stat--xp:hover {
+    border-color: #139a8c;
+}
+
+.perfil-stat.perfil-stat--racha:hover {
+    border-color: #f59e0b;
+}
+
+.perfil-stat.perfil-stat--fecha:hover {
+    border-color: #115fbe;
+}
+
+/* Nota bajo la racha */
+.perfil-stat-nota {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 0.35rem;
+}
+
+/* Logros */
+.logros-contador {
+    float: right;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #139a8c;
+}
+.insignia-info { flex: 1; min-width: 0; }
+.insignia-item.desbloqueada { background: #e6f4f1; border-color: #b7e0d9; }
+.insignia-item.bloqueada .insignia-icono { filter: grayscale(1); }
+.insignia-barra {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 99px;
+    margin-top: 0.4rem;
+    overflow: hidden;
+}
+.insignia-barra > span {
+    display: block;
+    height: 100%;
+    background: #139a8c;
+    border-radius: 99px;
+}
+.insignia-meta { font-size: 0.72rem; color: #64748b; margin-top: 0.2rem; }
+.insignia-check { color: #139a8c; font-weight: 800; font-size: 1.1rem; }
+
+@media (max-width: 520px) {
+    .perfil-identidad { padding: 0 1.25rem 1.25rem; }
+    .perfil-avatar { width: 80px; height: 80px; font-size: 2rem; }
+    .perfil-identidad .perfil-avatar { margin-top: -40px; }
+}
+
+/* Los enlaces de la barra no se subrayan */
+a.nav-item { text-decoration: none; }

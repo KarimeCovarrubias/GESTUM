@@ -243,6 +243,9 @@ function finalizarLeccion() {
 
     mostrarResultados();
 
+    // Terminar la práctica cuenta como actividad del día (racha), aunque se hayan saltado letras
+    fetch('/api/practica/completar', { method: 'POST', keepalive: true }).catch(() => {});
+
     const pantallaCompleta = document.getElementById('pantalla-completa');
     if (pantallaCompleta) {
         pantallaCompleta.removeAttribute('hidden');

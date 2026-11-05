@@ -13,10 +13,22 @@
         <aside class="sidebar">
             <img class="logo" src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Gestum">
             <nav class="sidebar-nav">
-                <div class="nav-item active"><span class="icon">🏠</span>Inicio</div>
-                <div class="nav-item"><span class="icon">📚</span>Lecciones</div>
-                <div class="nav-item"><span class="icon">🏆</span>Ranking</div>
-                <div class="nav-item"><span class="icon">👤</span>Perfil</div>
+                <div class="nav-item active">
+                    <span class="icon">🏠</span>
+                    Inicio
+                </div>
+                <div class="nav-item">
+                    <span class="icon">📚</span>
+                    Lecciones
+                </div>
+                <div class="nav-item">
+                    <span class="icon">🏆</span>
+                    Ranking
+                </div>
+                <a href="{{ url_for('vista_perfil') }}" class="nav-item">
+                    <span class="icon">👤</span>
+                    Perfil
+                </a>
             </nav>
             
             <!-- Botón de Cerrar Sesión en la barra lateral -->
@@ -67,10 +79,19 @@
 
     <!-- Nav inferior: solo visible en móvil -->
     <nav class="bottom-nav">
-        <div class="nav-item active"><span class="icon">🏠</span>Inicio</div>
-        <div class="nav-item"><span class="icon">📚</span>Lecciones</div>
-        <div class="nav-item"><span class="icon">🏆</span>Ranking</div>
-        <div class="nav-item"><span class="icon">👤</span>Perfil</div>
+        <div class="nav-item active">
+            <span class="icon">🏠</span>Inicio
+        </div>
+        <div class="nav-item">
+            <span class="icon">📚</span>
+        </div>
+        <div class="nav-item">
+            <span class="icon">🏆</span>Ranking
+        </div>
+        <a href="{{ url_for('vista_perfil') }}" class="nav-item">
+            <span class="icon">👤</span>
+            Perfil
+        </a>
     </nav>
 
     <script src="{{ url_for('static', filename='js/user-home.js') }}"></script>

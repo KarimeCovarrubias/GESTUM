@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestum · Perfil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_user-home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_perfil.css') }}">
+</head>
+
+<body>
+    <div class="app-shell">
+        <!-- Barra lateral: solo visible en escritorio -->
+        <aside class="sidebar">
+            <img class="logo" src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Gestum">
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('vista_user_home') }}" class="nav-item"><span class="icon">🏠</span>Inicio</a>
+                <div class="nav-item"><span class="icon">📚</span>Lecciones</div>
+                <div class="nav-item"><span class="icon">🏆</span>Ranking</div>
+                <a href="{{ url_for('vista_perfil') }}" class="nav-item active"><span class="icon">👤</span>Perfil</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="/api/logout" class="nav-item nav-item--logout">
+                    <img src="{{ url_for('static', filename='imagenes/cerrar-sesion.png') }}" alt="Cerrar sesión" class="icon-img">
+                    Cerrar sesión
+                </a>
+            </div>
+        </aside>
+
+        <div class="main-column">
+            <header class="topbar">
+                <img class="logo logo--mobile" src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Gestum">
+                <div class="stat-row">
+                    <div class="stat stat--racha" aria-label="Racha de práctica"><span class="icon">🔥</span><span id="racha-val">0</span></div>
+                    <div class="stat stat--estrellas" aria-label="Estrellas acumuladas"><span class="icon">⭐</span><span id="xp-val">0</span></div>
+                </div>
+
+                <div class="user-menu-wrapper">
+                    <button class="avatar" id="user-avatar" type="button" aria-haspopup="true" aria-expanded="false">?</button>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <div class="dropdown-header">
+                            <span id="dropdown-username">Usuario</span>
+                        </div>
+                        <a href="/api/logout" class="dropdown-item dropdown-item--logout">
+                            <img src="{{ url_for('static', filename='imagenes/cerrar-sesion.png') }}" alt="Cerrar sesión" class="icon-img">
+                            Cerrar sesión
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <main class="perfil-wrap">
+                <!-- Tarjeta principal: quién es -->
+                <section class="perfil-card">
+                    <div class="perfil-banner"></div>
+                    <div class="perfil-identidad">
+                        <div class="perfil-avatar" id="perfil-avatar">?</div>
+                        <div class="perfil-textos">
+                            <h1 id="perfil-nombre">Cargando…</h1>
+                            <p class="perfil-user" id="perfil-user"></p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Bloque de Estadísticas Principales -->
+                <section class="perfil-stats">
+                    <article class="perfil-stat perfil-stat--xp">
+                        <span class="perfil-stat-icono">⭐</span>
+                        <span class="perfil-stat-valor" id="perfil-xp">0</span>
+                        <span class="perfil-stat-etiqueta">XP totales</span>
+                    </article>
+
+                    <article class="perfil-stat perfil-stat--racha">
+                        <span class="perfil-stat-icono">🔥</span>
+                        <span class="perfil-stat-valor" id="perfil-racha">0</span>
+                        <span class="perfil-stat-etiqueta" id="perfil-racha-etiqueta">días de racha</span>
+                        <span class="perfil-stat-nota" id="perfil-racha-max"></span>
+                    </article>
+
+                    <article class="perfil-stat perfil-stat--fecha">
+                        <span class="perfil-stat-icono">📅</span>
+                        <span class="perfil-stat-valor perfil-stat-valor--texto" id="perfil-desde">—</span>
+                        <span class="perfil-stat-etiqueta">Te uniste a GESTUM</span>
+                    </article>
+                </section>
+
+                <div class="perfil-grid-inferior">
+                    <!-- Logros: se calculan con tu progreso real -->
+                    <section class="perfil-seccion-bloque">
+                        <h3>Logros e Insignias <span class="logros-contador" id="logros-contador"></span></h3>
+                        <div class="insignias-grid" id="logros-lista"></div>
+                    </section>
+
+                    <!-- Resumen de actividad -->
+                    <section class="perfil-seccion-bloque">
+                        <h3>Resumen de Actividad</h3>
+                        <div class="resumen-caja">
+                            <div class="resumen-fila"><span>Pruebas aprobadas</span><strong id="res-pruebas">—</strong></div>
+                            <div class="resumen-fila"><span>Letras dominadas</span><strong id="res-letras">—</strong></div>
+                            <div class="resumen-fila"><span>Precisión promedio</span><strong id="res-precision">—</strong></div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Nav inferior: solo visible en móvil -->
+    <nav class="bottom-nav">
+        <a href="{{ url_for('vista_user_home') }}" class="nav-item"><span class="icon">🏠</span>Inicio</a>
+        <div class="nav-item"><span class="icon">📚</span>Lecciones</div>
+        <div class="nav-item"><span class="icon">🏆</span>Ranking</div>
+        <a href="{{ url_for('vista_perfil') }}" class="nav-item active"><span class="icon">👤</span>Perfil</a>
+    </nav>
+
+    <script src="{{ url_for('static', filename='js/perfil.js') }}"></script>
+</body>
+</html>

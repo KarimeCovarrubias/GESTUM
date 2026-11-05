@@ -478,3 +478,7 @@ button {
     height: 20px;
     object-fit: contain;
 }
+
+a.nav-item{
+    text-decoration: none;
+}

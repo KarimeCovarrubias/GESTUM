@@ -7,8 +7,10 @@ from backend.database.curriculum import (
     obtener_siguiente_leccion_id, obtener_leccion_actual_usuario, XP_POR_LETRA, XP_BONO_PRUEBA
 )
 from backend.database.progreso import registrar_intento, registrar_prueba_aprobada
+from backend.database.logros import obtener_perfil_extra
 from backend.vision.evaluador import evaluar_frame, evaluar_secuencia
 
+from datetime import datetime
 from flask import Flask, request, jsonify, url_for, render_template, session, redirect
 from backend.database.conexion import inicializar_bd, obtener_conexion
 from backend.database.usuarios import (
@@ -147,6 +149,60 @@ def vista_user_home():
         return redirect('/login')
     return render_template('user-home.html')
 
+MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
+         "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+
+
+def _fecha_larga(texto):
+    """'2026-11-04 16:16:05' -> '4 de noviembre de 2026' (si no se puede, devuelve el texto tal cual)."""
+    try:
+        fecha = datetime.strptime((texto or '')[:10], '%Y-%m-%d')
+        return f"{fecha.day} de {MESES[fecha.month - 1]} de {fecha.year}"
+    except (ValueError, TypeError):
+        return texto or ''
+
+
+@app.route('/perfil')
+def vista_perfil():
+    if 'usuario_id' not in session:
+        return redirect('/login')
+    return render_template('perfil.html')
+
+
+@app.route('/api/perfil')
+def api_perfil():
+    if 'usuario_id' not in session:
+        return jsonify({'ok': False}), 401
+
+    # Si pasó un día completo sin practicar, la racha se muestra en 0
+    reiniciar_racha_si_vencida(session['usuario_id'])
+
+    conexion = obtener_conexion()
+    u = conexion.execute("""
+        SELECT nombre, apellidoP, apellidoM, nombreUsuario, fecha_registro,
+               racha_actual, racha_maxima, puntos_xp
+        FROM usuario WHERE id = ?
+    """, (session['usuario_id'],)).fetchone()
+    conexion.close()
+
+    if not u:
+        return jsonify({'ok': False}), 401
+
+    nombre_completo = ' '.join(p for p in (u['nombre'], u['apellidoP'], u['apellidoM']) if p)
+
+    return jsonify({
+        'ok': True,
+        'nombreCompleto': nombre_completo,
+        'nombre': u['nombre'],
+        'nombreUsuario': u['nombreUsuario'],
+        'miembroDesde': _fecha_larga(u['fecha_registro']),
+        'racha': u['racha_actual'],
+        'rachaMaxima': u['racha_maxima'],
+        'xp': u['puntos_xp'],
+        **obtener_perfil_extra(session['usuario_id']),
+    })
+
+
 @app.route('/nosotros')
 def vista_nosotros():
     return render_template('Nosotros.html')
@@ -249,6 +305,15 @@ def api_prueba_aprobar():
 @app.route('/api/teoria/completar', methods=['POST'])
 def api_teoria_completar():
     """Terminar la teoría de una lección cuenta como actividad del día (racha), sin XP."""
+    if 'usuario_id' not in session:
+        return jsonify({'ok': False}), 401
+    actualizar_racha_y_xp(session['usuario_id'], xp_ganado=0)
+    return jsonify({'ok': True})
+
+
+@app.route('/api/practica/completar', methods=['POST'])
+def api_practica_completar():
+    """Terminar una práctica (aunque se hayan saltado letras) cuenta para la racha. El XP ya se dio por letra."""
     if 'usuario_id' not in session:
         return jsonify({'ok': False}), 401
     actualizar_racha_y_xp(session['usuario_id'], xp_ganado=0)
