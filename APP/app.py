@@ -311,15 +311,6 @@ def api_teoria_completar():
     return jsonify({'ok': True})
 
 
-@app.route('/api/practica/completar', methods=['POST'])
-def api_practica_completar():
-    """Terminar una práctica (aunque se hayan saltado letras) cuenta para la racha. El XP ya se dio por letra."""
-    if 'usuario_id' not in session:
-        return jsonify({'ok': False}), 401
-    actualizar_racha_y_xp(session['usuario_id'], xp_ganado=0)
-    return jsonify({'ok': True})
-
-
 @app.route('/api/practica/evaluar', methods=['POST'])
 def api_practica_evaluar():
     if 'usuario_id' not in session:
