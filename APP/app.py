@@ -8,8 +8,11 @@ from backend.database.curriculum import (
 )
 from backend.database.progreso import registrar_intento, registrar_prueba_aprobada
 from backend.database.logros import obtener_perfil_extra
+from backend.database import cuenta
+from backend.correo import enviar_recuperacion
 from backend.vision.evaluador import evaluar_frame, evaluar_secuencia
 
+import time
 from datetime import datetime
 from flask import Flask, request, jsonify, url_for, render_template, session, redirect
 from backend.database.conexion import inicializar_bd, obtener_conexion
@@ -40,8 +43,12 @@ def api_registro():
     nombreUsuario = (data.get('nombreUsuario') or '').strip()
     edad_raw = (data.get('edad') or '').strip() if isinstance(data.get('edad'), str) else data.get('edad')
     contrasena = data.get('contrasena') or ''
+    correo = (data.get('correo') or '').strip()
 
     # --- Validaciones ---
+    if not cuenta.correo_valido(correo):
+        return jsonify({'ok': False, 'mensaje': 'Escribe un correo válido (lo usaremos para recuperar tu contraseña).'}), 400
+
     if not nombre or not apellidoP or not nombreUsuario or not contrasena:
         return jsonify({'ok': False, 'mensaje': 'Todos los campos obligatorios deben estar completos.'}), 400
 
@@ -67,7 +74,8 @@ def api_registro():
         apellidoM=apellidoM,
         nombreUsuario=nombreUsuario,
         edad=edad,
-        contrasena=contrasena
+        contrasena=contrasena,
+        correo=correo
     )
 
     if exito:
@@ -201,6 +209,141 @@ def api_perfil():
         'xp': u['puntos_xp'],
         **obtener_perfil_extra(session['usuario_id']),
     })
+
+
+# --- CONFIGURACIÓN DE LA CUENTA ---
+
+@app.route('/configuracion')
+def vista_configuracion():
+    if 'usuario_id' not in session:
+        return redirect('/login')
+    return render_template('configuracion.html')
+
+
+@app.route('/api/configuracion')
+def api_configuracion():
+    if 'usuario_id' not in session:
+        return jsonify({'ok': False}), 401
+    reiniciar_racha_si_vencida(session['usuario_id'])
+    datos = cuenta.obtener_datos(session['usuario_id'])
+    if not datos:
+        return jsonify({'ok': False}), 401
+    return jsonify({'ok': True, **datos})
+
+
+@app.route('/api/usuario/disponible')
+def api_usuario_disponible():
+    if 'usuario_id' not in session:
+        return jsonify({'ok': False}), 401
+    nombre = (request.args.get('nombre') or '').strip()
+    if len(nombre) < 3 or ' ' in nombre:
+        return jsonify({'ok': True, 'disponible': False, 'mensaje': 'Mínimo 3 caracteres y sin espacios.'})
+    libre = cuenta.nombre_usuario_disponible(nombre, excepto_id=session['usuario_id'])
+    return jsonify({'ok': True, 'disponible': libre,
+                    'mensaje': 'Disponible' if libre else 'Ese usuario ya está en uso.'})
+
+
+@app.route('/api/configuracion/perfil', methods=['POST'])
+def api_configuracion_perfil():
+    if 'usuario_id' not in session:
+        return jsonify({'ok': False}), 401
+    d = request.get_json(silent=True) or {}
+    exito, mensaje = cuenta.actualizar_datos(
+        session['usuario_id'], d.get('nombre'), d.get('apellidoP'), d.get('apellidoM'),
+        d.get('edad'), d.get('nombreUsuario'), d.get('correo')
+    )
+    if not exito:
+        return jsonify({'ok': False, 'mensaje': mensaje}), 400
+    datos = cuenta.obtener_datos(session['usuario_id'])
+    session['nombre'] = datos['nombre']
+    session['nombreUsuario'] = datos['nombreUsuario']
+    return jsonify({'ok': True, 'mensaje': mensaje, **datos})
+
+
+@app.route('/api/configuracion/contrasena', methods=['POST'])
+def api_configuracion_contrasena():
+    if 'usuario_id' not in session:
+        return jsonify({'ok': False}), 401
+    d = request.get_json(silent=True) or {}
+    exito, mensaje = cuenta.cambiar_contrasena(session['usuario_id'], d.get('actual'), d.get('nueva'))
+    return jsonify({'ok': exito, 'mensaje': mensaje}), (200 if exito else 400)
+
+
+@app.route('/api/configuracion/reiniciar-progreso', methods=['POST'])
+def api_reiniciar_progreso():
+    if 'usuario_id' not in session:
+        return jsonify({'ok': False}), 401
+    d = request.get_json(silent=True) or {}
+    if not cuenta.verificar_contrasena(session['usuario_id'], d.get('contrasena')):
+        return jsonify({'ok': False, 'mensaje': 'La contraseña no es correcta.'}), 400
+    cuenta.reiniciar_progreso(session['usuario_id'])
+    return jsonify({'ok': True, 'mensaje': 'Tu progreso se reinició.'})
+
+
+@app.route('/api/configuracion/eliminar-cuenta', methods=['POST'])
+def api_eliminar_cuenta():
+    if 'usuario_id' not in session:
+        return jsonify({'ok': False}), 401
+    d = request.get_json(silent=True) or {}
+    if not cuenta.verificar_contrasena(session['usuario_id'], d.get('contrasena')):
+        return jsonify({'ok': False, 'mensaje': 'La contraseña no es correcta.'}), 400
+    cuenta.eliminar_cuenta(session['usuario_id'])
+    session.clear()
+    return jsonify({'ok': True, 'redirect': '/login'})
+
+
+# --- RECUPERAR CONTRASEÑA ---
+
+_SOLICITUDES_RECUPERAR = {}
+
+
+def _limitar(clave, maximo=5, ventana=900):
+    """Máximo 'maximo' solicitudes por 'ventana' segundos para la misma IP."""
+    ahora_ts = time.time()
+    recientes = [t for t in _SOLICITUDES_RECUPERAR.get(clave, []) if ahora_ts - t < ventana]
+    if len(recientes) >= maximo:
+        _SOLICITUDES_RECUPERAR[clave] = recientes
+        return False
+    recientes.append(ahora_ts)
+    _SOLICITUDES_RECUPERAR[clave] = recientes
+    return True
+
+
+@app.route('/olvide')
+def vista_olvide():
+    return render_template('olvide.html')
+
+
+@app.route('/api/recuperar', methods=['POST'])
+def api_recuperar():
+    d = request.get_json(silent=True) or {}
+    correo = (d.get('correo') or '').strip()
+    if not cuenta.correo_valido(correo):
+        return jsonify({'ok': False, 'mensaje': 'Escribe un correo válido.'}), 400
+    if not _limitar(request.remote_addr or 'desconocida'):
+        return jsonify({'ok': False, 'mensaje': 'Demasiados intentos. Espera unos minutos.'}), 429
+
+    resultado = cuenta.crear_token_recuperacion(correo)
+    if resultado:
+        token, nombre = resultado
+        enlace = url_for('vista_restablecer', _external=True) + '?token=' + token
+        enviar_recuperacion(correo, nombre, enlace)
+
+    # Misma respuesta exista o no el correo, para no revelar quién tiene cuenta
+    return jsonify({'ok': True, 'mensaje': 'Si ese correo está registrado, te enviamos un enlace para restablecer tu contraseña. Revisa también el spam.'})
+
+
+@app.route('/restablecer')
+def vista_restablecer():
+    token = request.args.get('token', '')
+    return render_template('restablecer.html', token=token, valido=cuenta.token_valido(token))
+
+
+@app.route('/api/restablecer', methods=['POST'])
+def api_restablecer():
+    d = request.get_json(silent=True) or {}
+    exito, mensaje = cuenta.restablecer_contrasena(d.get('token', ''), d.get('contrasena', ''))
+    return jsonify({'ok': exito, 'mensaje': mensaje}), (200 if exito else 400)
 
 
 @app.route('/nosotros')

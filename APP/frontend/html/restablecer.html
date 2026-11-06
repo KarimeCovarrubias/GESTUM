@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestum · Nueva contraseña</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_recuperar.css') }}">
+</head>
+<body>
+    <main class="rec-caja">
+        <img class="rec-logo" src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Gestum">
+
+        {% if valido %}
+        <h1>Crea tu nueva contraseña</h1>
+        <p class="rec-sub">Elige una contraseña de al menos 8 caracteres.</p>
+
+        <form id="form-restablecer" novalidate data-token="{{ token }}">
+            <label class="rec-campo">Contraseña nueva
+                <input type="password" id="nueva" autocomplete="new-password" minlength="8" required>
+            </label>
+            <label class="rec-campo">Repite la contraseña
+                <input type="password" id="repite" autocomplete="new-password" required>
+            </label>
+            <p class="rec-msg" id="msg" role="status"></p>
+            <button type="submit" class="rec-btn" id="btn">Guardar contraseña</button>
+        </form>
+        {% else %}
+        <h1>Enlace no válido</h1>
+        <p class="rec-sub">Este enlace ya se usó o venció (duran 45 minutos). Pide uno nuevo.</p>
+        <a class="rec-btn rec-btn--link" href="/olvide">Pedir un enlace nuevo</a>
+        {% endif %}
+
+        <a class="rec-volver" href="/login">← Volver a iniciar sesión</a>
+    </main>
+    <script src="{{ url_for('static', filename='js/recuperar.js') }}"></script>
+</body>
+</html>

@@ -31,8 +31,13 @@
 }
 
 /* El avatar sube sobre el banner; el nombre queda completo en la zona blanca */
-.perfil-identidad .perfil-avatar { margin-top: -48px; }
-.perfil-textos { padding-top: 0.9rem; min-width: 0; }
+.perfil-identidad .perfil-avatar {
+    margin-top: -48px;
+}
+
+.perfil-textos {
+    padding-top: 0.9rem; min-width: 0;
+}
 
 .perfil-avatar {
     width: 96px;
@@ -268,9 +273,21 @@
     font-weight: 700;
     color: #139a8c;
 }
-.insignia-info { flex: 1; min-width: 0; }
-.insignia-item.desbloqueada { background: #e6f4f1; border-color: #b7e0d9; }
-.insignia-item.bloqueada .insignia-icono { filter: grayscale(1); }
+
+.insignia-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.insignia-item.desbloqueada {
+    background: #e6f4f1;
+    border-color: #b7e0d9;
+}
+
+.insignia-item.bloqueada .insignia-icono {
+    filter: grayscale(1);
+}
+
 .insignia-barra {
     height: 6px;
     background: #e2e8f0;
@@ -284,14 +301,50 @@
     background: #139a8c;
     border-radius: 99px;
 }
-.insignia-meta { font-size: 0.72rem; color: #64748b; margin-top: 0.2rem; }
-.insignia-check { color: #139a8c; font-weight: 800; font-size: 1.1rem; }
+.insignia-meta {
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-top: 0.2rem;
+}
+.insignia-check {
+    color: #139a8c;
+    font-weight: 800;
+    font-size: 1.1rem;
+}
 
 @media (max-width: 520px) {
-    .perfil-identidad { padding: 0 1.25rem 1.25rem; }
-    .perfil-avatar { width: 80px; height: 80px; font-size: 2rem; }
-    .perfil-identidad .perfil-avatar { margin-top: -40px; }
+    .perfil-identidad {
+        padding: 0 1.25rem 1.25rem;
+    }
+    .perfil-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+    .perfil-identidad .perfil-avatar {
+        margin-top: -40px;
+    }
 }
 
 /* Los enlaces de la barra no se subrayan */
-a.nav-item { text-decoration: none; }
+a.nav-item {
+    text-decoration: none;
+}
+
+/* Engranaje de configuración (esquina del banner) */
+.perfil-card {
+    position: relative;
+}
+
+.perfil-config {
+    position: absolute; top: 14px; right: 14px; z-index: 2;
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; text-decoration: none; border-radius: 50%;
+    background: rgba(255,255,255,.22); backdrop-filter: blur(4px);
+    transition: background .2s, transform .3s;
+}
+
+.perfil-config:hover {
+    background: rgba(255,255,255,.4);
+    transform: rotate(60deg);
+}

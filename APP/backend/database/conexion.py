@@ -103,6 +103,27 @@ def inicializar_bd():
         )
     """)
 
+    # Migración: correo (para recuperar la contraseña). Las cuentas anteriores
+    # lo tendrán vacío hasta que lo agreguen en Configuración.
+    columnas = {fila["name"] for fila in cursor.execute("PRAGMA table_info(usuario)")}
+    if "correo" not in columnas:
+        cursor.execute("ALTER TABLE usuario ADD COLUMN correo TEXT")
+    cursor.execute("""
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_usuario_correo
+        ON usuario (lower(correo)) WHERE correo IS NOT NULL
+    """)
+
+    # Enlaces de recuperación de contraseña (se guarda solo el hash del token)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS tokens_recuperacion (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER NOT NULL,
+            token_hash TEXT NOT NULL UNIQUE,
+            expira TEXT NOT NULL,
+            FOREIGN KEY (usuario_id) REFERENCES usuario (id) ON DELETE CASCADE
+        )
+    """)
+
     conexion.commit()
     conexion.close()
 

@@ -55,9 +55,21 @@ function actualizarReferencia() {
     probeImg.src = ruta;
 }
 
+async function abrirCamara() {
+    // Usa la cámara elegida en Configuración; si ya no existe, la predeterminada
+    let id = '';
+    try { id = localStorage.getItem('gestum_camara') || ''; } catch (e) { /* sin almacenamiento */ }
+    if (id) {
+        try {
+            return await navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: id } }, audio: false });
+        } catch (e) { /* cae a la predeterminada */ }
+    }
+    return navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+}
+
 async function iniciarCamara() {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        const stream = await abrirCamara();
         video.srcObject = stream;
         camaraOverlay.textContent = 'Buscando tu mano…';
         intervaloId = setInterval(capturarYEvaluar, INTERVALO_MS);

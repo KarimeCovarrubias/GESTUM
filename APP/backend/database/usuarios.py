@@ -9,7 +9,7 @@ from backend.database.conexion import obtener_conexion
 from backend.database.tiempo import hoy, ahora_texto
 
 
-def crear_usuario(nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena):
+def crear_usuario(nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena, correo=None):
     """
     Registra un nuevo usuario en la base de datos.
     La contraseña se guarda hasheada, nunca en texto plano.
@@ -24,15 +24,17 @@ def crear_usuario(nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena)
 
     try:
         cursor.execute("""
-            INSERT INTO usuario (nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena_hash, fecha_registro)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena_hash.decode("utf-8"), fecha_registro))
+            INSERT INTO usuario (nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena_hash, fecha_registro, correo)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (nombre, apellidoP, apellidoM, nombreUsuario, edad, contrasena_hash.decode("utf-8"), fecha_registro, correo))
 
         conexion.commit()
         return True, "Cuenta creada correctamente."
 
     except Exception as error:
         if "UNIQUE constraint failed" in str(error):
+            if "correo" in str(error):
+                return False, "Ese correo ya está registrado."
             return False, "Ese nombre de usuario ya está en uso."
         return False, f"Ocurrió un error al crear la cuenta: {error}"
 

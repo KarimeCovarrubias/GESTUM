@@ -18,6 +18,7 @@
                 <div class="nav-item"><span class="icon">📚</span>Lecciones</div>
                 <div class="nav-item"><span class="icon">🏆</span>Ranking</div>
                 <a href="{{ url_for('vista_perfil') }}" class="nav-item active"><span class="icon">👤</span>Perfil</a>
+                <a href="{{ url_for('vista_configuracion') }}" class="nav-item"><span class="icon">⚙️</span>Configuración</a>
             </nav>
 
             <div class="sidebar-footer">
@@ -42,6 +43,7 @@
                         <div class="dropdown-header">
                             <span id="dropdown-username">Usuario</span>
                         </div>
+                        <a href="/configuracion" class="dropdown-item">⚙️ Configuración</a>
                         <a href="/api/logout" class="dropdown-item dropdown-item--logout">
                             <img src="{{ url_for('static', filename='imagenes/cerrar-sesion.png') }}" alt="Cerrar sesión" class="icon-img">
                             Cerrar sesión
@@ -53,6 +55,7 @@
             <main class="perfil-wrap">
                 <!-- Tarjeta principal: quién es -->
                 <section class="perfil-card">
+                    <a href="/configuracion" class="perfil-config" aria-label="Configuración" title="Configuración">⚙️</a>
                     <div class="perfil-banner"></div>
                     <div class="perfil-identidad">
                         <div class="perfil-avatar" id="perfil-avatar">?</div>

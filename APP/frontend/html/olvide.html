@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestum · Recuperar contraseña</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_recuperar.css') }}">
+</head>
+<body>
+    <main class="rec-caja">
+        <img class="rec-logo" src="{{ url_for('static', filename='imagenes/logo.png') }}" alt="Gestum">
+        <h1>¿Olvidaste tu contraseña?</h1>
+        <p class="rec-sub">Escribe el correo con el que te registraste y te enviaremos un enlace para crear una nueva.</p>
+
+        <form id="form-olvide" novalidate>
+            <label class="rec-campo">Correo
+                <input type="email" id="correo" placeholder="tucorreo@ejemplo.com" autocomplete="email" required>
+            </label>
+            <p class="rec-msg" id="msg" role="status"></p>
+            <button type="submit" class="rec-btn" id="btn">Enviar enlace</button>
+        </form>
+
+        <a class="rec-volver" href="/login">← Volver a iniciar sesión</a>
+    </main>
+    <script src="{{ url_for('static', filename='js/recuperar.js') }}"></script>
+</body>
+</html>
