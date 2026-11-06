@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 apellidoM: document.getElementById('apellidoM').value,
                 edad: document.getElementById('edad').value,
                 nombreUsuario: document.getElementById('nombreUsuario').value,
+                correo: document.getElementById('correo').value.trim(),
                 contrasena: contrasena
             };
 

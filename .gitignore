@@ -9,11 +9,11 @@ __pycache__/
 *.pyo
 
 # Base de datos local (datos de usuarios reales, no debe subirse)
-backend/datos/*.db
+**/backend/datos/*.db
 
 # Dataset y modelo entrenado (pesados, cada quien los genera localmente)
-modelo/datos/
-modelo/*.pkl
+#**/modelo/datos/
+#modelo/*.pkl
 
 # Editor / SO
 .vscode/
@@ -24,4 +24,4 @@ Thumbs.db
 .env
 
 # correo para GESTUM y su CLAVE
-backend/correo_config.py
+**/backend/correo_config.py
