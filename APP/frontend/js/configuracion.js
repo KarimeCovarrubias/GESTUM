@@ -96,6 +96,23 @@ $('form-contrasena').addEventListener('submit', async (e) => {
     toast('Contraseña actualizada ✓');
 });
 
+// ---------- Apariencia (tema) ----------
+function marcarTema() {
+    const actual = window.GestumTema ? window.GestumTema.obtener() : 'claro';
+    document.querySelectorAll('.cfg-tema').forEach(b => {
+        const activo = b.dataset.temaOpcion === actual;
+        b.classList.toggle('activo', activo);
+        b.setAttribute('aria-checked', String(activo));
+    });
+}
+document.querySelectorAll('.cfg-tema').forEach(b => {
+    b.addEventListener('click', () => {
+        if (window.GestumTema) window.GestumTema.establecer(b.dataset.temaOpcion);
+        marcarTema();
+    });
+});
+marcarTema();
+
 // ---------- Cámara ----------
 const CLAVE_CAMARA = 'gestum_camara';
 let streamPreview = null;

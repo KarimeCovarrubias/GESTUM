@@ -1,0 +1,461 @@
+/* ==========================================================================
+   1. CONFIGURACIÓN GLOBAL Y VARIABLES DEL TEMA OSCURO
+   ========================================================================== */
+html[data-tema="oscuro"] {
+    color-scheme: dark;                     /* Controles nativos, scroll y autocompletar oscuros */
+
+    /* Variables que ya usan user-home, práctica, prueba y teoría */
+    --bg: #0e1621;
+    --card: #162130;
+    --border: #263649;
+    --navy: #e6edf5;                         /* En estas páginas "navy" es el color del texto */
+    --navy-soft: #98a9bd;
+    --teal: #1a8ca5;
+    --teal-light: #3aa6bd;
+    --teal-dark: #167a90;
+    --gold: #e0a63e;
+    --gold-light: #b98a2e;
+    --heart: #e8695d;
+    --locked-bg: #1d2b3b;
+    --locked-text: #6b7f95;
+    --ok: #2fb872;
+    --ok-bg: #12301f;
+
+    /* Variables propias del tema oscuro, para las pantallas con colores fijos */
+    --o-card2: #1c2a3b;
+    --o-texto: #e6edf5;
+    --o-suave: #98a9bd;
+    --o-tenue: #6b7f95;
+    --o-borde: #263649;
+}
+
+html[data-tema="oscuro"] body { 
+    background: var(--bg); 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] img.logo { 
+    background: #fff; 
+    border-radius: 10px; 
+    padding: 2px 6px; 
+} /* El logo tiene fondo claro */
+
+
+/* ==========================================================================
+   2. PANTALLA DE INICIO (USER-HOME) Y NAVEGACIÓN
+   ========================================================================== */
+html[data-tema="oscuro"] .tile.is-current { 
+    background: var(--card); 
+    color: var(--o-texto); 
+    box-shadow: 0 0 0 4px rgba(224,166,62,.18); 
+}
+
+html[data-tema="oscuro"] .tile.is-done { 
+    background: #14788e; 
+}
+
+html[data-tema="oscuro"] .nav-item.active { 
+    background: var(--bg); 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .avatar { 
+    background: linear-gradient(135deg, #2a7f93, #8a6a2a); 
+    color: #fff; 
+}
+
+html[data-tema="oscuro"] .user-dropdown { 
+    background: var(--card); 
+    border-color: var(--border); 
+    box-shadow: 0 8px 24px rgba(0,0,0,.45); 
+}
+
+html[data-tema="oscuro"] .dropdown-header { 
+    color: var(--o-texto); 
+    border-color: var(--border); 
+}
+
+html[data-tema="oscuro"] .dropdown-item { 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .dropdown-item--logout { 
+    color: #ff7b72; 
+}
+
+html[data-tema="oscuro"] .dropdown-item:hover { 
+    background: var(--o-card2); 
+}
+
+html[data-tema="oscuro"] .sidebar .icon-img, 
+html[data-tema="oscuro"] .dropdown-item .icon-img { 
+    filter: brightness(1.4); 
+}
+
+
+/* ==========================================================================
+   3. MÓDULOS DE PRÁCTICA, PRUEBA Y TEORÍA
+   ========================================================================== */
+html[data-tema="oscuro"] .referencia-img,
+html[data-tema="oscuro"] .media-box img,
+html[data-tema="oscuro"] .media-box video { 
+    background: #fff; 
+}
+
+html[data-tema="oscuro"] .media-box { 
+    background: var(--o-card2); 
+}
+
+html[data-tema="oscuro"] .paso.actual { 
+    background: var(--card); 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .tile-letra { 
+    color: var(--o-tenue); 
+}
+
+html[data-tema="oscuro"] .tile-letra.current { 
+    background: var(--card); 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .pista-mov { 
+    background: #3a2c10; 
+    color: #f0c877; 
+}
+
+html[data-tema="oscuro"] .btn-saltar { 
+    background: var(--card); 
+    color: var(--o-suave); 
+    border-color: var(--border); 
+}
+
+html[data-tema="oscuro"] .btn-saltar:hover:not(:disabled) { 
+    background: var(--o-card2); 
+    border-color: var(--o-tenue); 
+}
+
+html[data-tema="oscuro"] .btn-continuar:disabled,
+html[data-tema="oscuro"] .btn-continuar:disabled:hover { 
+    background: #2a3a4d; 
+    color: #7d8fa4; 
+}
+
+html[data-tema="oscuro"] .feedback-bar--ok .btn-continuar { 
+    background: var(--ok); 
+    color: #fff; 
+}
+
+html[data-tema="oscuro"] .letra-grande { 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .letra-card { 
+    box-shadow: 0 6px 20px rgba(0,0,0,.35); 
+}
+
+
+/* ==========================================================================
+   4. PANTALLAS DE ÉXITO Y MODALES DE SALIDA
+   ========================================================================== */
+/* Pantalla de lección completada */
+html[data-tema="oscuro"] .gestum-overlay { 
+    background-color: var(--bg); 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .gestum-badge-icon { 
+    background: var(--o-card2); 
+    box-shadow: none; 
+}
+
+html[data-tema="oscuro"] .gestum-titulo-exito,
+html[data-tema="oscuro"] .gestum-stat-card .stat-val { 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .gestum-subtitulo-exito,
+html[data-tema="oscuro"] .gestum-stat-card .stat-label { 
+    color: var(--o-suave); 
+}
+
+html[data-tema="oscuro"] .gestum-stat-card { 
+    background-color: var(--card); 
+    border-color: var(--border); 
+    box-shadow: none; 
+}
+
+html[data-tema="oscuro"] .gestum-footer-action { 
+    border-top-color: var(--border); 
+}
+
+html[data-tema="oscuro"] .btn-gestum-secondary { 
+    background-color: var(--card); 
+    color: var(--o-texto); 
+    border-color: var(--border); 
+}
+
+html[data-tema="oscuro"] .btn-gestum-secondary:hover { 
+    background-color: var(--o-card2); 
+    border-color: var(--o-tenue); 
+}
+
+/* Cuadro "¿seguro que quieres salir?" */
+html[data-tema="oscuro"] .salir-fondo { 
+    background: rgba(0,0,0,.65); 
+}
+
+html[data-tema="oscuro"] .salir-caja { 
+    background: var(--card); 
+    box-shadow: 0 20px 50px rgba(0,0,0,.5); 
+}
+
+html[data-tema="oscuro"] .salir-icono { 
+    background: var(--o-card2); 
+}
+
+html[data-tema="oscuro"] .salir-titulo { 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .salir-texto { 
+    color: var(--o-suave); 
+}
+
+html[data-tema="oscuro"] .salir-btn-salir:hover { 
+    background: #2a1a1c; 
+}
+
+
+/* ==========================================================================
+   5. SECCIÓN DE PERFIL DE USUARIO
+   ========================================================================== */
+html[data-tema="oscuro"] .perfil-card,
+html[data-tema="oscuro"] .perfil-stat,
+html[data-tema="oscuro"] .perfil-seccion-bloque { 
+    background: var(--card); 
+    border-color: var(--border); 
+    box-shadow: none; 
+}
+
+html[data-tema="oscuro"] .perfil-avatar { 
+    background: #24456b; 
+    border-color: var(--card); 
+}
+
+html[data-tema="oscuro"] .perfil-textos h1,
+html[data-tema="oscuro"] .perfil-stat-valor,
+html[data-tema="oscuro"] .perfil-seccion-bloque h3,
+html[data-tema="oscuro"] .insignia-info h4,
+html[data-tema="oscuro"] .resumen-fila strong { 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .perfil-user,
+html[data-tema="oscuro"] .perfil-stat-etiqueta,
+html[data-tema="oscuro"] .insignia-info p,
+html[data-tema="oscuro"] .insignia-meta,
+html[data-tema="oscuro"] .resumen-fila { 
+    color: var(--o-suave); 
+}
+
+html[data-tema="oscuro"] .perfil-stat-nota { 
+    color: var(--o-tenue); 
+}
+
+html[data-tema="oscuro"] .perfil-stat:hover { 
+    box-shadow: 0 12px 20px -4px rgba(0,0,0,.5); 
+}
+
+html[data-tema="oscuro"] .perfil-seccion-bloque h3 { 
+    border-bottom-color: var(--border); 
+}
+
+html[data-tema="oscuro"] .insignia-item { 
+    background: var(--o-card2); 
+    border-color: var(--border); 
+}
+
+html[data-tema="oscuro"] .insignia-item.desbloqueada { 
+    background: #12302c; 
+    border-color: #1f5a52; 
+}
+
+html[data-tema="oscuro"] .insignia-icono { 
+    background: var(--card); 
+    box-shadow: none; 
+}
+
+html[data-tema="oscuro"] .insignia-barra { 
+    background: var(--border); 
+}
+
+html[data-tema="oscuro"] .resumen-fila { 
+    border-bottom-color: var(--border); 
+}
+
+html[data-tema="oscuro"] .badge-activo { 
+    background: #12302c; 
+    color: #3cc9b9; 
+}
+
+
+/* ==========================================================================
+   6. PANTALLA DE CONFIGURACIÓN Y APARIENCIA
+   ========================================================================== */
+html[data-tema="oscuro"] .cfg-titulo,
+html[data-tema="oscuro"] .cfg-card h2,
+html[data-tema="oscuro"] .cfg-fila strong,
+html[data-tema="oscuro"] .cfg-modal-caja h3 { 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .cfg-volver,
+html[data-tema="oscuro"] .cfg-campo,
+html[data-tema="oscuro"] .cfg-ayuda,
+html[data-tema="oscuro"] .cfg-fila p,
+html[data-tema="oscuro"] .cfg-modal-caja p { 
+    color: var(--o-suave); 
+}
+
+html[data-tema="oscuro"] .cfg-volver:hover { 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .cfg-card,
+html[data-tema="oscuro"] .cfg-modal-caja { 
+    background: var(--card); 
+    border-color: var(--border); 
+}
+
+html[data-tema="oscuro"] .cfg-card h2 { 
+    border-bottom-color: var(--border); 
+}
+
+html[data-tema="oscuro"] .cfg-card--peligro { 
+    border-color: #5a2a2a; 
+}
+
+html[data-tema="oscuro"] .cfg-card--peligro h2 { 
+    color: #ff8a80; 
+}
+
+html[data-tema="oscuro"] .cfg-fila + .cfg-fila { 
+    border-top-color: var(--border); 
+}
+
+html[data-tema="oscuro"] .cfg-campo input,
+html[data-tema="oscuro"] .cfg-campo select { 
+    background: var(--o-card2); 
+    border-color: var(--border); 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .cfg-campo input:focus,
+html[data-tema="oscuro"] .cfg-campo select:focus { 
+    background: var(--bg); 
+    border-color: #139a8c; 
+}
+
+html[data-tema="oscuro"] .cfg-btn--sec { 
+    background: var(--o-card2); 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .cfg-btn--peligro-sec { 
+    background: #3a1f21; 
+    color: #ff8a80; 
+}
+
+html[data-tema="oscuro"] .cfg-aviso { 
+    background: #3a2c10; 
+    border-color: #6b5220; 
+    color: #f0c877; 
+}
+
+html[data-tema="oscuro"] .cfg-toast { 
+    background: #e6edf5; 
+    color: #0e1621; 
+}
+
+html[data-tema="oscuro"] .cfg-links a { 
+    color: #3cc9b9; 
+}
+
+html[data-tema="oscuro"] .cfg-hint { 
+    color: var(--o-tenue); 
+}
+
+html[data-tema="oscuro"] .cfg-hint.ok { 
+    color: #3cc9b9; 
+}
+
+html[data-tema="oscuro"] .cfg-hint.error, 
+html[data-tema="oscuro"] .cfg-msg.error { 
+    color: #ff8a80; 
+}
+
+html[data-tema="oscuro"] .cfg-msg.ok { 
+    color: #3cc9b9; 
+}
+
+/* Selector de apariencia */
+html[data-tema="oscuro"] .cfg-tema { 
+    background: var(--o-card2); 
+    border-color: var(--border); 
+    color: var(--o-suave); 
+}
+
+html[data-tema="oscuro"] .cfg-tema:hover { 
+    border-color: var(--o-tenue); 
+}
+
+html[data-tema="oscuro"] .cfg-tema.activo { 
+    border-color: #139a8c; 
+    color: var(--o-texto); 
+    background: #12302c; 
+}
+
+
+/* ==========================================================================
+   7. RECUPERACIÓN DE CONTRASEÑA
+   ========================================================================== */
+html[data-tema="oscuro"] .rec-caja { 
+    background: var(--card); 
+    border-color: var(--border); 
+    box-shadow: none; 
+}
+
+html[data-tema="oscuro"] h1 { 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .rec-sub, 
+html[data-tema="oscuro"] .rec-campo, 
+html[data-tema="oscuro"] .rec-volver { 
+    color: var(--o-suave); 
+}
+
+html[data-tema="oscuro"] .rec-volver:hover { 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .rec-campo input { 
+    background: var(--o-card2); 
+    border-color: var(--border); 
+    color: var(--o-texto); 
+}
+
+html[data-tema="oscuro"] .rec-campo input:focus { 
+    background: var(--bg); 
+    border-color: #139a8c; 
+}
+
+html[data-tema="oscuro"] .rec-msg.ok { 
+    color: #3cc9b9; 
+}
+
+html[data-tema="oscuro"] .rec-msg.error { 
+    color: #ff8a80; 
+}

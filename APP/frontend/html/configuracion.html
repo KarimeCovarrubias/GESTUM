@@ -6,6 +6,8 @@
     <title>Gestum · Configuración</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_user-home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_configuracion.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo_tema-oscuro.css') }}">
+    <script src="{{ url_for('static', filename='js/tema.js') }}"></script>
 </head>
 
 <body>
@@ -105,6 +107,17 @@
                         <p class="cfg-msg" id="msg-contrasena" role="status"></p>
                         <button type="submit" class="cfg-btn">Cambiar contraseña</button>
                     </form>
+                </section>
+
+                <!-- Apariencia -->
+                <section class="cfg-card">
+                    <h2>Apariencia</h2>
+                    <p class="cfg-ayuda">Elige cómo quieres ver GESTUM. Se guarda en este navegador.</p>
+                    <div class="cfg-temas" role="radiogroup" aria-label="Tema">
+                        <button type="button" class="cfg-tema" data-tema-opcion="claro" role="radio"><span>☀️</span>Claro</button>
+                        <button type="button" class="cfg-tema" data-tema-opcion="oscuro" role="radio"><span>🌙</span>Oscuro</button>
+                        <button type="button" class="cfg-tema" data-tema-opcion="auto" role="radio"><span>💻</span>Automático</button>
+                    </div>
                 </section>
 
                 <!-- Cámara -->
