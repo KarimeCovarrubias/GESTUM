@@ -22,3 +22,6 @@ Thumbs.db
 
 # Variables de entorno / secretos
 .env
+
+# correo para GESTUM y su CLAVE
+backend/correo_config.py
