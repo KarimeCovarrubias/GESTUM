@@ -52,7 +52,7 @@ try:
 except Exception:  # por si se ejecuta desde otro lugar
     LETRAS_DINAMICAS = {"J", "K", "LL", "Ñ", "Q", "X", "Z"}
 
-ABECEDARIO = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + ["LL", "Ñ"]
+ABECEDARIO = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 LETRAS_ESTATICAS = [l for l in ABECEDARIO if l not in LETRAS_DINAMICAS]
 
 CARPETA_BASE = os.path.join(CARPETA_MODELO, "letrasest")
