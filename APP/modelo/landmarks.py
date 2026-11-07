@@ -85,6 +85,32 @@ def resumir_secuencia(secuencia):
     return np.concatenate([remuestreada.ravel(), mat.std(axis=0)])
 
 
+def espejar_frames(X):
+    """
+    Letras ESTÁTICAS. Imagen en espejo de una mano: la mano izquierda que hace una
+    seña es el reflejo de la derecha haciendo la misma. Como los 63 números ya
+    están centrados en la muñeca y a escala, el espejo es solo cambiar el signo de
+    la coordenada x (posiciones 0, 3, 6, ...). Sirve para que el modelo entienda
+    cualquier mano aunque el dataset se haya grabado con una sola.
+    Acepta un vector (63,) o una matriz (N, 63) y devuelve una copia.
+    """
+    X = np.array(X, dtype=float, copy=True)
+    X[..., 0::3] *= -1
+    return X
+
+
+def espejar_secuencia(secuencia):
+    """
+    Letras CON MOVIMIENTO. Igual que espejar_frames pero para una secuencia
+    (N, 65): invierte la x de la forma y también el desplazamiento horizontal de
+    la muñeca (columna 63), porque el movimiento también se refleja.
+    """
+    mat = np.array(secuencia, dtype=float, copy=True)
+    mat[:, 0:63:3] *= -1
+    mat[:, 63] *= -1
+    return mat
+
+
 def crear_detector(max_num_hands=1, min_detection_confidence=0.6, min_tracking_confidence=0.5,
                    static_image_mode=False):
     return mp_manos.Hands(
