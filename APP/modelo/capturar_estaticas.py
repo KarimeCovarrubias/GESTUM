@@ -28,6 +28,9 @@ Para que el modelo aprenda bien la letra, en cada toma:
     gírala suavemente, inclínala, cambia su altura.
   - Haz varias tomas por letra (idealmente 5 o más), cambiando de lugar, de
     luz o de fondo entre toma y toma.
+  - Cada toma se guarda sola al llegar a META_FRAMES (150 por defecto), así todas
+    las tomas y todas las letras quedan con el mismo número de frames. Cámbialo
+    en la constante META_FRAMES (o pon 0 para grabar hasta pulsar 'q').
   - Si la mano se queda quieta, el script deja de guardar frames repetidos
     (te avisa en pantalla): es normal, solo muévela un poco.
 """
@@ -52,11 +55,12 @@ try:
 except Exception:  # por si se ejecuta desde otro lugar
     LETRAS_DINAMICAS = {"J", "K", "LL", "Ñ", "Q", "X", "Z"}
 
-ABECEDARIO = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+ABECEDARIO = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ") + ["LL", "Ñ"]
 LETRAS_ESTATICAS = [l for l in ABECEDARIO if l not in LETRAS_DINAMICAS]
 
 CARPETA_BASE = os.path.join(CARPETA_MODELO, "letrasest")
 
+META_FRAMES = 150           # la toma se guarda SOLA al llegar a este número (0 = sin límite, solo con q)
 INTERVALO_S = 0.12          # como máximo un frame guardado cada 0.12 s (~8 por segundo)
 DIFERENCIA_MINIMA = 0.04    # un frame se guarda solo si es distinto al anterior guardado
 CUENTA_REGRESIVA_S = 3
@@ -203,14 +207,19 @@ def main():
                         ultimo = valores
                         t_ultimo_guardado = ahora
                         t_ultimo_nuevo = ahora
-                texto(vista, f"GRABANDO {letra}: {len(frames)} frames", 30, (0, 0, 255))
-                if valores is None:
-                    texto(vista, "No se detecta la mano", 62, (0, 165, 255))
-                elif ahora - t_ultimo_nuevo > 1.5:
-                    texto(vista, "Mueve o gira un poco la mano", 62, (0, 255, 255))
-                else:
-                    texto(vista, "Muevela despacio: cerca, lejos, inclinada...", 62, (200, 200, 200), 0.55)
-            elif estado == "pausa":
+                        if META_FRAMES and len(frames) >= META_FRAMES:
+                            cerrar_toma()       # guarda sola y vuelve a "listo"
+                            avisar(mensaje + "  | ESPACIO = otra toma", 4.0)
+                if estado == "grabando":
+                    meta = f"/{META_FRAMES}" if META_FRAMES else ""
+                    texto(vista, f"GRABANDO {letra}: {len(frames)}{meta} frames", 30, (0, 0, 255))
+                    if valores is None:
+                        texto(vista, "No se detecta la mano", 62, (0, 165, 255))
+                    elif ahora - t_ultimo_nuevo > 1.5:
+                        texto(vista, "Mueve o gira un poco la mano", 62, (0, 255, 255))
+                    else:
+                        texto(vista, "Muevela despacio: cerca, lejos, inclinada...", 62, (200, 200, 200), 0.55)
+            if estado == "pausa":
                 texto(vista, f"PAUSA {letra}: {len(frames)} frames  (ESPACIO = seguir)", 30, (0, 200, 255))
             elif estado == "listo":
                 total = guardadas_sesion.get(letra, 0)
