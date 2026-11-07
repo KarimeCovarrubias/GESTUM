@@ -1,18 +1,19 @@
 """
-Entrena el modelo de letras ESTÁTICAS con el dataset
+Entrena el modelo de letras ESTÁTICAS.
 
-Uso (desde la raíz del proyecto):
-    python modelo/entrenar_modelo.py
+De dónde toma los datos:
+  1. modelo/letrasest/<LETRA>/<LETRA>NN.npy  <- lo que graba capturar_estaticas.py
+     (cada archivo es una "toma" con muchos frames).
+  2. Opcional: modelo/datos/letras*.csv (sin encabezado: persona, letra, 63
+     números), el formato anterior de tus compañeros. Si vas a rehacer el
+     dataset desde cero, saca esos CSV de la carpeta para no mezclarlos.
 
-Qué hace:
-  1. Une todos los modelo/datos/letras*.csv (uno por compañero, sin encabezado:
-     persona, letra, 63 números).
-  2. Ignora las letras con movimiento (esas van en entrenar_modelo_dinamico.py).
-  3. Mide qué tan bien funcionaría con UNA PERSONA NUEVA (deja una persona
-     fuera, entrena con las demás y prueba con ella). Ese número es el
-     realista; el de "mezclar al azar" sale casi siempre ~99 % y engaña,
-     porque capturar.py guarda decenas de fotos casi idénticas por segundo.
-  4. Entrena el modelo final con TODO y lo guarda en modelo/modelo_entrenado.pkl.
+Ignora las letras con movimiento (esas van en entrenar_modelo_dinamico.py).
+
+Cómo mide la calidad: deja TOMAS completas fuera (entrena con unas tomas y
+prueba con otras que el modelo no vio). Mezclar frames al azar daría ~99 % y
+engaña, porque los frames de una misma toma son casi idénticos. Sigue siendo
+optimista si todas las tomas son de la misma mano: pruébalo con otra persona.
 """
 
 import glob
@@ -24,63 +25,113 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import GroupKFold
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import config
 
+BLOQUE_CSV = 60          # para los CSV viejos: 60 filas seguidas de una letra = una "toma"
+TOMAS_MINIMAS = 5        # tomas por letra recomendadas
+FRAMES_MINIMOS = 150     # frames por letra recomendados
 
-def cargar_datos():
+
+def cargar_tomas():
+    """Lee las tomas .npy. Devuelve un DataFrame: letra, persona, toma, 63 columnas."""
+    filas = []
+    for carpeta in sorted(glob.glob(os.path.join(config.CARPETA_LETRAS_ESTATICAS, "*"))):
+        if not os.path.isdir(carpeta):
+            continue
+        letra = os.path.basename(carpeta).upper()
+        for ruta in sorted(glob.glob(os.path.join(carpeta, "*.npy"))):
+            datos = np.load(ruta)
+            if datos.ndim != 2 or datos.shape[1] != 63:
+                print(f"  (se omite {os.path.basename(ruta)}: forma {datos.shape}, se esperaba (N, 63))")
+                continue
+            nombre = os.path.basename(ruta)[:-4]
+            persona = nombre.rsplit("_", 1)[0] if "_" in nombre else "sin_persona"
+            df = pd.DataFrame(datos, columns=[f"p{i}" for i in range(63)])
+            df.insert(0, "toma", f"{letra}/{nombre}")
+            df.insert(0, "persona", persona)
+            df.insert(0, "letra", letra)
+            filas.append(df)
+    return filas
+
+
+def cargar_csv_viejos():
+    """Lee los letras*.csv del formato anterior (si los hay)."""
+    filas = []
     archivos = sorted(glob.glob(os.path.join(config.CARPETA_LETRAS_CSV, config.PATRON_LETRAS_CSV)))
-    if not archivos:
-        print(f"No encontré ningún CSV en {config.CARPETA_LETRAS_CSV} "
-              f"(busqué {config.PATRON_LETRAS_CSV}). Copia ahí el letras.csv de tus compañeros.")
-        return None
-    partes = [pd.read_csv(a, header=None) for a in archivos]
-    print("Archivos usados:", ", ".join(os.path.basename(a) for a in archivos))
-    datos = pd.concat(partes, ignore_index=True)
-    datos = datos.rename(columns={0: "persona", 1: "letra"})
-    datos["letra"] = datos["letra"].astype(str).str.upper()
-    return datos
+    for a in archivos:
+        d = pd.read_csv(a, header=None).rename(columns={0: "persona", 1: "letra"})
+        d["letra"] = d["letra"].astype(str).str.upper()
+        pos = d.groupby("letra").cumcount()
+        d.insert(0, "toma", [f"csv:{os.path.basename(a)}:{l}:{p // BLOQUE_CSV}" for l, p in zip(d["letra"], pos)])
+        d.columns = ["toma", "persona", "letra"] + [f"p{i}" for i in range(63)]
+        filas.append(d[["letra", "persona", "toma"] + [f"p{i}" for i in range(63)]])
+    if archivos:
+        print("CSV usados:", ", ".join(os.path.basename(a) for a in archivos))
+    return filas
+
+
+def evaluar_por_tomas(X, y, grupos):
+    """Validación cruzada dejando tomas completas fuera."""
+    n_tomas = len(set(grupos))
+    if n_tomas < 5:
+        print("  Muy pocas tomas para evaluar (menos de 5). Graba más tomas por letra.")
+        return
+    aciertos = np.zeros(len(y), dtype=bool)
+    for entrena, prueba in GroupKFold(n_splits=min(5, n_tomas)).split(X, y, grupos):
+        if len(set(y[entrena])) < 2:
+            continue
+        m = RandomForestClassifier(n_estimators=150, random_state=42, n_jobs=-1)
+        m.fit(X[entrena], y[entrena])
+        aciertos[prueba] = m.predict(X[prueba]) == y[prueba]
+    print(f"  Precisión dejando tomas fuera: {aciertos.mean() * 100:.1f} %")
+    por_letra = pd.Series(aciertos).groupby(y).mean().sort_values()
+    flojas = por_letra[por_letra < 0.9]
+    if len(flojas):
+        print("  Letras que más se confunden: " +
+              ", ".join(f"{l} ({a * 100:.0f} %)" for l, a in flojas.items()))
+    else:
+        print("  Todas las letras superan el 90 %.")
 
 
 def main():
-    datos = cargar_datos()
-    if datos is None:
+    partes = cargar_tomas() + cargar_csv_viejos()
+    if not partes:
+        print(f"No encontré datos. Graba con: python modelo/capturar_estaticas.py A\n"
+              f"(se guardan en {config.CARPETA_LETRAS_ESTATICAS})")
         return
+    datos = pd.concat(partes, ignore_index=True)
 
     dinamicas = datos["letra"].isin(config.LETRAS_DINAMICAS)
     if dinamicas.any():
-        print(f"Ignorando {dinamicas.sum()} filas de letras con movimiento "
+        print(f"Ignorando {int(dinamicas.sum())} filas de letras con movimiento "
               f"({sorted(datos.loc[dinamicas, 'letra'].unique())}).")
     datos = datos[~dinamicas].dropna()
 
-    X = datos.drop(columns=["persona", "letra"]).to_numpy(dtype=float)
+    columnas = [f"p{i}" for i in range(63)]
+    X = datos[columnas].to_numpy(dtype=float)
     y = datos["letra"].to_numpy()
+    grupos = datos["toma"].to_numpy()
     personas = datos["persona"].to_numpy()
 
-    print(f"\nFilas: {len(X)} | Letras: {len(set(y))} | Personas: {len(set(personas))}")
-    resumen = datos.groupby("letra")["persona"].agg(filas="size", personas="nunique")
+    resumen = datos.groupby("letra").agg(frames=("toma", "size"), tomas=("toma", "nunique"))
+    print(f"\nFrames: {len(X)} | Letras: {len(resumen)} | Tomas: {len(set(grupos))}")
     print(resumen.T.to_string())
 
-    pocas = resumen[resumen["personas"] < 2]
+    pocas = resumen[(resumen["tomas"] < TOMAS_MINIMAS) | (resumen["frames"] < FRAMES_MINIMOS)]
     if len(pocas):
-        print(f"\n⚠ {len(pocas)} letras tienen datos de UNA sola persona: {', '.join(pocas.index)}.")
-        print("  El modelo aprende la mano de esa persona, no la letra. Pídele a más gente que las capture.")
+        print(f"\n⚠ Letras con pocos datos (menos de {TOMAS_MINIMAS} tomas o {FRAMES_MINIMOS} frames): "
+              f"{', '.join(pocas.index)}.")
+        print("  Graba más tomas, moviendo un poco la mano y cambiando de lugar o de luz.")
+    if len(set(personas)) <= 1:
+        print("\nℹ Todo viene de la misma mano. Pídele a más personas que graben tomas: "
+              "el modelo aprende mejor la letra y no solo tu mano.")
 
-    # --- Evaluación honesta: dejar una persona fuera ---
-    print("\nEvaluación con una persona nueva (solo en letras con 2+ personas):")
-    letras_multi = set(resumen[resumen["personas"] >= 2].index)
-    for p in sorted(set(personas)):
-        prueba = (personas == p) & np.isin(y, list(letras_multi))
-        entrena = (personas != p) & np.isin(y, list(letras_multi))
-        if prueba.sum() == 0 or len(set(y[entrena])) < 2:
-            continue
-        m = RandomForestClassifier(n_estimators=200, random_state=42, n_jobs=-1)
-        m.fit(X[entrena], y[entrena])
-        acc = accuracy_score(y[prueba], m.predict(X[prueba]))
-        print(f"  {p}: {acc * 100:.1f} %  ({prueba.sum()} fotos)")
+    print("\nEvaluación (tomas completas que el modelo no vio):")
+    evaluar_por_tomas(X, y, grupos)
 
-    # --- Modelo final con todo ---
     modelo = RandomForestClassifier(n_estimators=300, random_state=42, n_jobs=-1)
     modelo.fit(X, y)
     os.makedirs(os.path.dirname(config.RUTA_MODELO), exist_ok=True)

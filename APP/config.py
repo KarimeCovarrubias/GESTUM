@@ -1,7 +1,6 @@
 """
 Configuración de rutas y parámetros del proyecto.
 
-Colocar este archivo en la raíz: config.py (mismo nivel que app.py)
 """
 
 import os
@@ -22,6 +21,10 @@ CARPETA_IMAGENES_LETRAS = os.path.join(BASE_DIR, "frontend", "imagenes", "letras
 # entrenador los une solo. Formato: persona, letra, 63 números (sin encabezado).
 CARPETA_LETRAS_CSV = CARPETA_DATOS_MODELO
 PATRON_LETRAS_CSV = "letras*.csv"
+
+# Letras estáticas (nuevo): capturar_estaticas.py guarda modelo/letrasest/<LETRA>/<LETRA>NN.npy
+# (cada archivo es una "toma" de forma (N, 63): N frames con la mano ya normalizada).
+CARPETA_LETRAS_ESTATICAS = os.path.join(BASE_DIR, "modelo", "letrasest")
 
 # Letras con movimiento: capturar_mov.py guarda modelo/letrasmov/<LETRA>/<persona>_0000.npy
 # (cada una de forma (60, 65)). Copia/une las carpetas de todos aquí:
