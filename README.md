@@ -19,7 +19,7 @@ Ayudar a las personas a aprender LSM de una manera más fácil y didáctica con 
 - **Cuentas de usuario:** registro con correo, inicio de sesión y perfil.
 - **Configuración:** editar datos personales, cambiar contraseña, elegir cámara, tema claro, oscuro o automático, reiniciar progreso y eliminar la cuenta.
 - **Recuperar contraseña por correo** con enlace de un solo uso que vence a los 10 minutos.
-- Diseño adaptable a celular y computadora.
+- Diseño adaptable a celular y computadora (Responsivo).
 
 ## Tecnologías
 
@@ -134,6 +134,14 @@ Cada letra usa una imagen y un video de referencia, nombrados con la letra en ma
 
 Si falta alguno, la pantalla de teoría muestra un ícono en su lugar. Los videos se recomiendan en formato vertical (9:16) y comprimidos.
 
+## Metodología de desarrollo
+GESTUM se desarrolló con un modelo **Iterativo e Incremental** con un prototipado evolutivo
+ - **Incremental**: El sistema creció por módulos funcionales (cuentas y lecciones, práctica con cámara, pruebas, perfil y logros, configuración, tema oscuro,
+ recuperación de contraseña), cada uno integrado a una versión que ya funcionaba.
+ - **Iterativo**: Cada módulo pasó por ciclos cortos de diseño, implementación, prueba y corrección a partir de la retroalimentación obtenida en las pruebas con usuarios
+ creados por el equipo de trabajo.
+- **Prototipado evolutivo**: Los requisitos se fueron precisando con cada versión (por ejemplo, la regla de la racha o el correo obligatorio) y el modelo de IA se mejoró capturando datos, entrenando y evaluando en varias rondas.
+
 ## Estado del proyecto
 
 En desarrollo. Pendiente probar el modelo con más personas, con distintas condiciones de luz y con personas zurdas. Además, pendiente de añadir más lecciones y logros.
@@ -142,3 +150,8 @@ En un futuro probablemente implementemos el Rankin.
 ## Licencia
 
 Por definir.
+
+## Mostrar/verificar Actualizaciones del repositorio de GitHub
+```bash
+git log --oneline --reverse
+```
