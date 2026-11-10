@@ -9,7 +9,7 @@ __pycache__/
 *.pyo
 
 # Base de datos local (datos de usuarios reales, no debe subirse)
-#**/backend/datos/*.db
+**/backend/datos/*.db
 
 # Dataset y modelo entrenado (pesados, cada quien los genera localmente)
 #**/modelo/datos/
