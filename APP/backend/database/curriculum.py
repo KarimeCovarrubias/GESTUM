@@ -36,7 +36,7 @@ XP_BONO_PRUEBA = 20  # XP extra, además del XP por letra, solo por aprobar la p
 # sin importar el progreso real, para poder probarlas libremente.
 # Ponlo en False cuando quieras que el desbloqueo real (secuencial) vuelva
 # a aplicar -- antes de que usuarios reales usen la app.
-FORZAR_DESBLOQUEO_TOTAL = True
+FORZAR_DESBLOQUEO_TOTAL = False
 
 # --- Bancos de palabras para las PRUEBAS ---
 # Cada prueba pide 3 palabras. Se eligen del banco de su lección, usando SOLO
