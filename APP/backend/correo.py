@@ -1,14 +1,10 @@
 """
 Envío de correos (recuperación de contraseña).
 
-Configura estas variables de entorno antes de iniciar la app. Con Gmail hace
-falta una "contraseña de aplicación" (Cuenta de Google > Seguridad > Verificación
-en dos pasos > Contraseñas de aplicaciones), NO tu contraseña normal:
+Configura el correo de una de estas dos formas.
 
-    GESTUM_SMTP_USUARIO   tu_correo@gmail.com
-    GESTUM_SMTP_CLAVE     la contraseña de aplicación de 16 letras
-    GESTUM_SMTP_HOST      (opcional) por defecto smtp.gmail.com
-    GESTUM_SMTP_PUERTO    (opcional) por defecto 587
+backend/correo_config.py y escribir ahí el correo y la contraseña de aplicación.
+Ese archivo está en .gitignore para que NO se suba a GitHub.
 
 Si no están configuradas, el enlace se imprime en la consola del servidor
 (modo desarrollo) en vez de enviarse.
@@ -21,9 +17,22 @@ import threading
 from email.message import EmailMessage
 
 
-def _enviar(destino, asunto, cuerpo):
+def _credenciales():
+    """Variables de entorno primero; si no, el archivo local backend/correo_config.py."""
     usuario = os.environ.get("GESTUM_SMTP_USUARIO")
     clave = os.environ.get("GESTUM_SMTP_CLAVE")
+    if usuario and clave:
+        return usuario, clave
+    try:
+        from backend import correo_config   # archivo local, NO se sube a GitHub
+        return getattr(correo_config, "USUARIO", None), getattr(correo_config, "CLAVE", None)
+    except ImportError:
+        return None, None
+
+
+def _enviar(destino, asunto, cuerpo):
+    usuario, clave = _credenciales()
+    clave = (clave or "").replace(" ", "")   # Google la muestra con espacios
 
     if not usuario or not clave:
         print("\n[GESTUM · correo sin configurar: modo desarrollo]")
@@ -51,7 +60,7 @@ def enviar_recuperacion(destino, nombre, enlace):
     cuerpo = (
         f"Hola {nombre},\n\n"
         "Recibimos una solicitud para restablecer tu contraseña de GESTUM.\n"
-        f"Entra a este enlace (vale 45 minutos y se usa una sola vez):\n\n{enlace}\n\n"
+        f"Entra a este enlace (vale 10 minutos y se usa una sola vez):\n\n{enlace}\n\n"
         "Si no fuiste tú, ignora este mensaje: tu contraseña no cambiará.\n"
     )
     # En un hilo aparte para que la respuesta al usuario no espere al servidor de correo

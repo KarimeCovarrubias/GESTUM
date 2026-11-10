@@ -14,7 +14,7 @@ import bcrypt
 from backend.database.conexion import obtener_conexion
 from backend.database.tiempo import ahora
 
-MINUTOS_VALIDEZ_TOKEN = 45
+MINUTOS_VALIDEZ_TOKEN = 10
 CORREO_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
