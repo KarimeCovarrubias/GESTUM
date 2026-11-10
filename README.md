@@ -155,3 +155,8 @@ Por definir.
 ```bash
 git log --oneline --reverse
 ```
+
+## Para clonar el repositorio
+```bash
+robocopy C:\Users\TU-USUARIO\GESTUM D:\Respaldo\GESTUM /E /XD venv __pycache__ /R:1 /W:1
+```
