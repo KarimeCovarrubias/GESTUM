@@ -1,0 +1,8 @@
+# IMPORTANTE: correo_config.py NO debe subirse a GitHub (agrégarlo a .gitignore).
+#
+# La CLAVE es una "contraseña de aplicación" de Google (16 letras), NO la
+# contraseña normal de Gmail. Se crea en:
+#   Cuenta de Google > Seguridad > Verificación en dos pasos > Contraseñas de aplicaciones
+
+USUARIO = "tu_gmail@gmail.com"
+CLAVE = "abcd efgh ijkl mnop"
